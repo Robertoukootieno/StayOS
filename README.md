@@ -126,6 +126,7 @@ Open http://localhost:3000 to view the interactive Swagger UI documentation.
 ### Getting Started
 
 - **[Quick Reference](docs/QUICK_REFERENCE.md)** - ⭐ Essential commands and paths
+- **[Git Workflow](docs/GIT_WORKFLOW.md)** - Branching strategy and commit conventions
 - **[Migration Guide](docs/MIGRATION_GUIDE.md)** - Update your local environment (v4.0.0)
 - **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
 
