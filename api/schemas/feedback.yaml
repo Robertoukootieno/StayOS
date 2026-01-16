@@ -1,0 +1,210 @@
+Feedback:
+  type: object
+  description: Guest feedback submission
+  required:
+    - feedbackId
+    - guestId
+    - type
+    - rating
+    - status
+  properties:
+    feedbackId:
+      type: string
+      format: uuid
+      readOnly: true
+    guestId:
+      type: string
+      format: uuid
+    stayId:
+      type: string
+      format: uuid
+      description: Associated stay (if applicable)
+    propertyId:
+      type: string
+      format: uuid
+    type:
+      type: string
+      enum:
+        - COMPLAINT
+        - COMPLIMENT
+        - SUGGESTION
+        - GENERAL
+      example: COMPLAINT
+    category:
+      type: string
+      enum:
+        - ROOM_CLEANLINESS
+        - STAFF_SERVICE
+        - AMENITIES
+        - FOOD_BEVERAGE
+        - NOISE
+        - MAINTENANCE
+        - BILLING
+        - OTHER
+      example: ROOM_CLEANLINESS
+    rating:
+      type: integer
+      minimum: 1
+      maximum: 5
+      description: Overall rating (1-5 stars)
+      example: 3
+    subject:
+      type: string
+      example: Room not cleaned properly
+    description:
+      type: string
+      example: The bathroom was not cleaned when we checked in
+    status:
+      type: string
+      enum:
+        - SUBMITTED
+        - ACKNOWLEDGED
+        - IN_PROGRESS
+        - RESOLVED
+        - CLOSED
+      example: SUBMITTED
+    priority:
+      type: string
+      enum:
+        - LOW
+        - MEDIUM
+        - HIGH
+        - URGENT
+      default: MEDIUM
+    response:
+      type: object
+      properties:
+        respondedBy:
+          type: string
+          format: uuid
+        respondedAt:
+          type: string
+          format: date-time
+        message:
+          type: string
+    serviceRecovery:
+      type: object
+      description: Service recovery actions taken
+      properties:
+        actions:
+          type: array
+          items:
+            type: string
+        compensation:
+          $ref: 'common.yaml#/Money'
+        notes:
+          type: string
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+
+Survey:
+  type: object
+  description: Post-stay survey
+  required:
+    - surveyId
+    - stayId
+    - guestId
+  properties:
+    surveyId:
+      type: string
+      format: uuid
+      readOnly: true
+    stayId:
+      type: string
+      format: uuid
+    guestId:
+      type: string
+      format: uuid
+    overallRating:
+      type: integer
+      minimum: 1
+      maximum: 5
+    npsScore:
+      type: integer
+      minimum: 0
+      maximum: 10
+      description: Net Promoter Score (0-10)
+    ratings:
+      type: object
+      properties:
+        cleanliness:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comfort:
+          type: integer
+          minimum: 1
+          maximum: 5
+        staff:
+          type: integer
+          minimum: 1
+          maximum: 5
+        amenities:
+          type: integer
+          minimum: 1
+          maximum: 5
+        valueForMoney:
+          type: integer
+          minimum: 1
+          maximum: 5
+    comments:
+      type: string
+    wouldRecommend:
+      type: boolean
+    completedAt:
+      type: string
+      format: date-time
+      readOnly: true
+
+Review:
+  type: object
+  description: Third-party review (from OTAs, Google, etc.)
+  required:
+    - reviewId
+    - source
+    - rating
+  properties:
+    reviewId:
+      type: string
+      format: uuid
+      readOnly: true
+    source:
+      type: string
+      enum:
+        - GOOGLE
+        - TRIPADVISOR
+        - BOOKING_COM
+        - EXPEDIA
+        - AIRBNB
+        - OTHER
+      example: GOOGLE
+    externalId:
+      type: string
+      description: Review ID from external platform
+    guestName:
+      type: string
+      example: John D.
+    rating:
+      type: number
+      format: float
+      minimum: 1
+      maximum: 5
+      example: 4.5
+    title:
+      type: string
+    content:
+      type: string
+    reviewDate:
+      type: string
+      format: date
+    response:
+      type: object
+      properties:
+        respondedBy:
+          type: string
+        respondedAt:
+          type: string
+          format: date-time
+        message:
+          type: string
+

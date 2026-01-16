@@ -1,0 +1,276 @@
+Folio:
+  type: object
+  description: Guest billing folio
+  required:
+    - folioId
+    - propertyId
+    - guestId
+    - status
+  properties:
+    folioId:
+      type: string
+      format: uuid
+      readOnly: true
+    propertyId:
+      type: string
+      format: uuid
+    guestId:
+      type: string
+      format: uuid
+    stayId:
+      type: string
+      format: uuid
+    reservationId:
+      type: string
+      format: uuid
+    folioNumber:
+      type: string
+      description: Human-readable folio number
+      example: F-2025-001234
+      readOnly: true
+    status:
+      type: string
+      enum:
+        - OPEN
+        - CLOSED
+        - DISPUTED
+        - VOID
+      example: OPEN
+    lineItems:
+      type: array
+      items:
+        $ref: 'billing.yaml#/LineItem'
+    subtotal:
+      allOf:
+        - $ref: 'common.yaml#/Money'
+        - readOnly: true
+    taxes:
+      allOf:
+        - $ref: 'common.yaml#/Money'
+        - readOnly: true
+    fees:
+      allOf:
+        - $ref: 'common.yaml#/Money'
+        - readOnly: true
+    total:
+      allOf:
+        - $ref: 'common.yaml#/Money'
+        - readOnly: true
+    balance:
+      allOf:
+        - $ref: 'common.yaml#/Money'
+        - readOnly: true
+          description: Outstanding balance
+    payments:
+      type: array
+      items:
+        $ref: 'billing.yaml#/Payment'
+    closedAt:
+      type: string
+      format: date-time
+      readOnly: true
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+    links:
+      type: object
+      readOnly: true
+      properties:
+        self:
+          type: string
+          format: uri
+        pdf:
+          type: string
+          format: uri
+        guest:
+          type: string
+          format: uri
+
+LineItem:
+  type: object
+  description: Folio line item (charge)
+  required:
+    - lineItemId
+    - description
+    - amount
+    - category
+  properties:
+    lineItemId:
+      type: string
+      format: uuid
+      readOnly: true
+    description:
+      type: string
+      example: Room charge - Night 1
+    category:
+      type: string
+      enum:
+        - ROOM
+        - TAX
+        - FEE
+        - FOOD_BEVERAGE
+        - MINIBAR
+        - LAUNDRY
+        - PARKING
+        - PHONE
+        - INTERNET
+        - SPA
+        - OTHER
+      example: ROOM
+    amount:
+      $ref: 'common.yaml#/Money'
+    quantity:
+      type: integer
+      minimum: 1
+      default: 1
+    unitPrice:
+      $ref: 'common.yaml#/Money'
+    date:
+      type: string
+      format: date
+    isVoided:
+      type: boolean
+      default: false
+      readOnly: true
+    voidedAt:
+      type: string
+      format: date-time
+      readOnly: true
+    voidedBy:
+      type: string
+      format: uuid
+      readOnly: true
+    voidReason:
+      type: string
+
+Payment:
+  type: object
+  description: Payment transaction
+  required:
+    - paymentId
+    - amount
+    - method
+    - status
+  properties:
+    paymentId:
+      type: string
+      format: uuid
+      readOnly: true
+    folioId:
+      type: string
+      format: uuid
+    amount:
+      $ref: 'common.yaml#/Money'
+    method:
+      type: string
+      enum:
+        - CREDIT_CARD
+        - DEBIT_CARD
+        - CASH
+        - BANK_TRANSFER
+        - DIGITAL_WALLET
+        - CHECK
+        - VOUCHER
+      example: CREDIT_CARD
+    status:
+      type: string
+      enum:
+        - PENDING
+        - AUTHORIZED
+        - CAPTURED
+        - COMPLETED
+        - FAILED
+        - REFUNDED
+        - PARTIALLY_REFUNDED
+      example: COMPLETED
+    transactionId:
+      type: string
+      description: External payment processor transaction ID
+    cardDetails:
+      type: object
+      properties:
+        last4:
+          type: string
+          example: '4242'
+        brand:
+          type: string
+          example: Visa
+        expiryMonth:
+          type: integer
+        expiryYear:
+          type: integer
+    processedAt:
+      type: string
+      format: date-time
+      readOnly: true
+    refunds:
+      type: array
+      items:
+        type: object
+        properties:
+          refundId:
+            type: string
+            format: uuid
+          amount:
+            $ref: 'common.yaml#/Money'
+          reason:
+            type: string
+          refundedAt:
+            type: string
+            format: date-time
+    receiptUrl:
+      type: string
+      format: uri
+      readOnly: true
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+
+RevenueReport:
+  type: object
+  description: Revenue report
+  required:
+    - reportId
+    - propertyId
+    - startDate
+    - endDate
+  properties:
+    reportId:
+      type: string
+      format: uuid
+      readOnly: true
+    propertyId:
+      type: string
+      format: uuid
+    startDate:
+      type: string
+      format: date
+    endDate:
+      type: string
+      format: date
+    totalRevenue:
+      $ref: 'common.yaml#/Money'
+    revenueByCategory:
+      type: object
+      properties:
+        room:
+          $ref: 'common.yaml#/Money'
+        foodBeverage:
+          $ref: 'common.yaml#/Money'
+        other:
+          $ref: 'common.yaml#/Money'
+    occupancyRate:
+      type: number
+      format: float
+      minimum: 0
+      maximum: 100
+      description: Percentage
+    averageDailyRate:
+      $ref: 'common.yaml#/Money'
+    revPAR:
+      $ref: 'common.yaml#/Money'
+      description: Revenue per available room
+    generatedAt:
+      type: string
+      format: date-time
+      readOnly: true
+
+

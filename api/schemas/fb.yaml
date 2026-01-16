@@ -1,0 +1,217 @@
+FBOrder:
+  type: object
+  description: Food & Beverage order
+  required:
+    - orderId
+    - propertyId
+    - orderType
+    - status
+  properties:
+    orderId:
+      type: string
+      format: uuid
+      readOnly: true
+    propertyId:
+      type: string
+      format: uuid
+    stayId:
+      type: string
+      format: uuid
+    guestId:
+      type: string
+      format: uuid
+    inventoryUnitId:
+      type: string
+      format: uuid
+      description: Room number for room service
+    orderType:
+      type: string
+      enum:
+        - ROOM_SERVICE
+        - RESTAURANT
+        - BAR
+        - BANQUET
+        - MINIBAR
+      example: ROOM_SERVICE
+    status:
+      type: string
+      enum:
+        - PENDING
+        - CONFIRMED
+        - PREPARING
+        - READY
+        - SERVED
+        - CANCELLED
+      example: PENDING
+    items:
+      type: array
+      items:
+        type: object
+        properties:
+          menuItemId:
+            type: string
+            format: uuid
+          name:
+            type: string
+          quantity:
+            type: integer
+            minimum: 1
+          unitPrice:
+            $ref: 'common.yaml#/Money'
+          specialInstructions:
+            type: string
+          status:
+            type: string
+            enum:
+              - PENDING
+              - PREPARING
+              - READY
+              - SERVED
+    subtotal:
+      allOf:
+        - $ref: 'common.yaml#/Money'
+        - readOnly: true
+    tax:
+      allOf:
+        - $ref: 'common.yaml#/Money'
+        - readOnly: true
+    serviceCharge:
+      allOf:
+        - $ref: 'common.yaml#/Money'
+        - readOnly: true
+    total:
+      allOf:
+        - $ref: 'common.yaml#/Money'
+        - readOnly: true
+    specialInstructions:
+      type: string
+    deliveryTime:
+      type: string
+      format: date-time
+    servedAt:
+      type: string
+      format: date-time
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+
+MenuItem:
+  type: object
+  description: Menu item
+  required:
+    - itemId
+    - name
+    - category
+    - price
+    - available
+  properties:
+    itemId:
+      type: string
+      format: uuid
+      readOnly: true
+    name:
+      type: string
+      example: Caesar Salad
+    description:
+      type: string
+    category:
+      type: string
+      enum:
+        - APPETIZER
+        - MAIN_COURSE
+        - DESSERT
+        - BEVERAGE
+        - ALCOHOL
+        - BREAKFAST
+        - SNACK
+      example: APPETIZER
+    price:
+      $ref: 'common.yaml#/Money'
+    available:
+      type: boolean
+      default: true
+    dietary:
+      type: array
+      items:
+        type: string
+        enum:
+          - VEGETARIAN
+          - VEGAN
+          - GLUTEN_FREE
+          - DAIRY_FREE
+          - NUT_FREE
+          - HALAL
+          - KOSHER
+    allergens:
+      type: array
+      items:
+        type: string
+    preparationTime:
+      type: integer
+      description: Preparation time in minutes
+    imageUrl:
+      type: string
+      format: uri
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+
+FBInventoryItem:
+  type: object
+  description: F&B inventory item
+  required:
+    - inventoryItemId
+    - name
+    - unit
+    - currentStock
+  properties:
+    inventoryItemId:
+      type: string
+      format: uuid
+      readOnly: true
+    name:
+      type: string
+      example: Tomatoes
+    category:
+      type: string
+      enum:
+        - PRODUCE
+        - MEAT
+        - DAIRY
+        - BEVERAGE
+        - DRY_GOODS
+        - ALCOHOL
+        - SUPPLIES
+      example: PRODUCE
+    unit:
+      type: string
+      enum:
+        - KG
+        - LB
+        - L
+        - GAL
+        - UNIT
+      example: KG
+    currentStock:
+      type: number
+      format: float
+    minimumStock:
+      type: number
+      format: float
+    maximumStock:
+      type: number
+      format: float
+    reorderPoint:
+      type: number
+      format: float
+    unitCost:
+      $ref: 'common.yaml#/Money'
+    supplier:
+      type: string
+    lastRestocked:
+      type: string
+      format: date-time
+    expiryDate:
+      type: string
+      format: date
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+

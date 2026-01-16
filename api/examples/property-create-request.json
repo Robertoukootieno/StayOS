@@ -1,0 +1,48 @@
+{
+  "name": "Grand Plaza Hotel",
+  "classification": "HOTEL",
+  "starRating": 4.5,
+  "location": {
+    "street": "123 Main Street",
+    "city": "San Francisco",
+    "state": "CA",
+    "postalCode": "94102",
+    "country": "US"
+  },
+  "coordinates": {
+    "latitude": 37.7749,
+    "longitude": -122.4194
+  },
+  "timezone": "America/Los_Angeles",
+  "operationalStatus": "ACTIVE",
+  "policies": {
+    "checkInTime": "15:00",
+    "checkOutTime": "11:00",
+    "cancellationPolicy": {
+      "refundability": "FULLY_REFUNDABLE",
+      "freeCancellationHours": 24
+    },
+    "childPolicy": {
+      "childrenAllowed": true,
+      "freeChildAge": 12
+    },
+    "petPolicy": {
+      "petsAllowed": false
+    },
+    "smokingPolicy": "NON_SMOKING"
+  },
+  "amenities": [
+    "WIFI",
+    "PARKING",
+    "POOL",
+    "GYM",
+    "RESTAURANT",
+    "SPA"
+  ],
+  "contactInfo": {
+    "email": "info@grandplaza.com",
+    "phone": "+14155551234",
+    "preferredContactMethod": "EMAIL"
+  }
+}
+

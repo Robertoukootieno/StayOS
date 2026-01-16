@@ -1,0 +1,13 @@
+npmName: "@stayos/api-client"
+npmVersion: "4.0.0"
+snapshot: false
+npmRepository: "https://registry.npmjs.org"
+supportsES6: true
+withInterfaces: true
+useSingleRequestParameter: true
+withSeparateModelsAndApi: true
+modelPackage: "models"
+apiPackage: "api"
+enumNameSuffix: ""
+enumPropertyNaming: "UPPERCASE"
+

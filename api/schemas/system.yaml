@@ -1,0 +1,208 @@
+Webhook:
+  type: object
+  description: Webhook subscription
+  required:
+    - webhookId
+    - url
+    - events
+    - status
+  properties:
+    webhookId:
+      type: string
+      format: uuid
+      readOnly: true
+    url:
+      type: string
+      format: uri
+      description: Webhook endpoint URL
+      example: https://example.com/webhooks/stayos
+    events:
+      type: array
+      items:
+        type: string
+        enum:
+          - reservation.created
+          - reservation.updated
+          - reservation.cancelled
+          - guest.created
+          - guest.updated
+          - stay.checked_in
+          - stay.checked_out
+          - payment.completed
+          - payment.failed
+          - folio.closed
+      description: Events to subscribe to
+    status:
+      type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
+        - SUSPENDED
+      example: ACTIVE
+    secret:
+      type: string
+      writeOnly: true
+      description: Secret for signature verification
+    headers:
+      type: object
+      additionalProperties:
+        type: string
+      description: Custom headers to include in webhook requests
+    retryPolicy:
+      type: object
+      properties:
+        maxRetries:
+          type: integer
+          minimum: 0
+          maximum: 10
+          default: 3
+        retryDelay:
+          type: integer
+          description: Delay between retries in seconds
+          default: 60
+    lastDeliveryAt:
+      type: string
+      format: date-time
+      readOnly: true
+    lastDeliveryStatus:
+      type: string
+      enum:
+        - SUCCESS
+        - FAILURE
+      readOnly: true
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+
+WebhookDelivery:
+  type: object
+  description: Webhook delivery log
+  required:
+    - deliveryId
+    - webhookId
+    - event
+    - status
+  properties:
+    deliveryId:
+      type: string
+      format: uuid
+      readOnly: true
+    webhookId:
+      type: string
+      format: uuid
+    event:
+      type: string
+      example: reservation.created
+    payload:
+      type: object
+      description: Event payload
+    status:
+      type: string
+      enum:
+        - PENDING
+        - SUCCESS
+        - FAILURE
+        - RETRYING
+      example: SUCCESS
+    httpStatus:
+      type: integer
+      description: HTTP response status code
+      example: 200
+    responseBody:
+      type: string
+    attempts:
+      type: integer
+      minimum: 1
+      description: Number of delivery attempts
+    deliveredAt:
+      type: string
+      format: date-time
+      readOnly: true
+    nextRetryAt:
+      type: string
+      format: date-time
+    errorMessage:
+      type: string
+
+HealthCheck:
+  type: object
+  description: System health check
+  required:
+    - status
+  properties:
+    status:
+      type: string
+      enum:
+        - HEALTHY
+        - DEGRADED
+        - UNHEALTHY
+      example: HEALTHY
+    timestamp:
+      type: string
+      format: date-time
+      readOnly: true
+    version:
+      type: string
+      example: 2.0.0
+    services:
+      type: object
+      properties:
+        database:
+          type: string
+          enum:
+            - UP
+            - DOWN
+        cache:
+          type: string
+          enum:
+            - UP
+            - DOWN
+        messageQueue:
+          type: string
+          enum:
+            - UP
+            - DOWN
+
+SystemMetrics:
+  type: object
+  description: System metrics
+  required:
+    - timestamp
+  properties:
+    timestamp:
+      type: string
+      format: date-time
+      readOnly: true
+    requests:
+      type: object
+      properties:
+        total:
+          type: integer
+        successful:
+          type: integer
+        failed:
+          type: integer
+        averageResponseTime:
+          type: number
+          format: float
+          description: Average response time in milliseconds
+    database:
+      type: object
+      properties:
+        connections:
+          type: integer
+        queryTime:
+          type: number
+          format: float
+          description: Average query time in milliseconds
+    cache:
+      type: object
+      properties:
+        hitRate:
+          type: number
+          format: float
+          description: Cache hit rate percentage
+        memoryUsage:
+          type: number
+          format: float
+          description: Memory usage in MB
+

@@ -1,0 +1,13 @@
+# StayOS.ApiClient.Model.InventoryUnitAllOfLinks
+
+## Properties
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**Self** | **string** |  | [optional] 
+**Property** | **string** |  | [optional] 
+**Availability** | **string** |  | [optional] 
+**CurrentReservation** | **string** |  | [optional] 
+
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+

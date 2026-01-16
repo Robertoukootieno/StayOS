@@ -1,0 +1,5 @@
+apis:
+  docs/api/openapi.yaml:
+    alias: noventrix-stayos-api
+  docs/api/openapi-bundled.yaml:
+    alias: noventrix-stayos-api1

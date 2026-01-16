@@ -1,0 +1,105 @@
+# StayOS API - Local Testing Configuration
+# This is a modified version of openapi.yaml with local OAuth endpoints for testing
+
+openapi: 3.1.0
+info:
+  title: Noventrix StayOS API (Local Testing)
+  version: 1.0.0-local
+  description: |
+    # StayOS API - Local Testing Mode
+    
+    This configuration uses local mock OAuth server for testing authentication/authorization.
+    
+    **Mock OAuth Server:** http://localhost:4000
+    
+    ## Test Users
+    - **admin / admin123** - Full access (admin:all)
+    - **manager / manager123** - Read/Write access
+    - **readonly / readonly123** - Read-only access
+
+servers:
+  - url: http://localhost:8080/v1
+    description: Local Development (Mock Backend)
+  - url: https://api-sandbox.stayos.com/v1
+    description: Sandbox (Test Environment)
+
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      description: OAuth 2.0 with local mock server
+      flows:
+        authorizationCode:
+          authorizationUrl: http://localhost:4000/oauth/authorize
+          tokenUrl: http://localhost:4000/oauth/token
+          refreshUrl: http://localhost:4000/oauth/refresh
+          scopes:
+            read:properties: Read property information
+            write:properties: Create and update properties
+            read:inventory: Read inventory units
+            write:inventory: Manage inventory units
+            read:reservations: View reservations
+            write:reservations: Create and modify reservations
+            read:guests: View guest profiles
+            write:guests: Manage guest profiles
+            read:stays: View active stays
+            write:stays: Manage check-in/check-out
+            read:operations: View housekeeping and maintenance
+            write:operations: Manage operations tasks
+            read:payments: View payment information
+            write:payments: Process payments
+            read:channels: View channel manager integrations
+            write:channels: Manage channel connections
+            read:fb: View food & beverage orders
+            write:fb: Manage F&B operations
+            read:billing: View billing and folios
+            write:billing: Manage billing operations
+            read:procurement: View purchase orders and suppliers
+            write:procurement: Manage procurement
+            read:webhooks: View webhook configurations
+            write:webhooks: Manage webhooks
+            read:compliance: View compliance reports
+            read:system: View system metrics
+            read:audit: Access audit logs
+            write:compliance: Generate compliance reports
+            admin:all: Full administrative access
+        clientCredentials:
+          tokenUrl: http://localhost:4000/oauth/token
+          scopes:
+            integration:read: Read access for integrations
+            integration:write: Write access for integrations
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT Bearer token obtained from OAuth flow
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for service-to-service authentication
+    mTLS:
+      type: mutualTLS
+      description: Mutual TLS for high-security integrations
+
+security:
+  - OAuth2:
+      - read:properties
+      - write:properties
+      - read:reservations
+      - write:reservations
+      - read:guests
+      - write:guests
+      - read:payments
+      - write:payments
+      - admin:all
+  - BearerAuth: []
+  - ApiKeyAuth: []
+
+# Import all paths and schemas from the main spec
+paths:
+  $ref: './openapi.yaml#/paths'
+
+tags:
+  $ref: './openapi.yaml#/tags'
+

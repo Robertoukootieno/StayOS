@@ -1,0 +1,218 @@
+AuditLog:
+  type: object
+  description: Audit log entry
+  required:
+    - logId
+    - timestamp
+    - action
+    - resource
+  properties:
+    logId:
+      type: string
+      format: uuid
+      readOnly: true
+    timestamp:
+      type: string
+      format: date-time
+      readOnly: true
+    userId:
+      type: string
+      format: uuid
+      description: User who performed the action
+    action:
+      type: string
+      enum:
+        - CREATE
+        - READ
+        - UPDATE
+        - DELETE
+        - LOGIN
+        - LOGOUT
+        - EXPORT
+        - IMPORT
+      example: UPDATE
+    resource:
+      type: string
+      description: Resource type (e.g., reservation, guest, property)
+      example: reservation
+    resourceId:
+      type: string
+      format: uuid
+    changes:
+      type: object
+      description: JSON object showing what changed
+    ipAddress:
+      type: string
+      example: 192.168.1.1
+    userAgent:
+      type: string
+    status:
+      type: string
+      enum:
+        - SUCCESS
+        - FAILURE
+      example: SUCCESS
+    errorMessage:
+      type: string
+
+ComplianceReport:
+  type: object
+  description: Compliance report
+  required:
+    - reportId
+    - type
+    - propertyId
+    - startDate
+    - endDate
+  properties:
+    reportId:
+      type: string
+      format: uuid
+      readOnly: true
+    type:
+      type: string
+      enum:
+        - GUEST_REGISTRY
+        - TAX_REPORT
+        - OCCUPANCY_REPORT
+        - REVENUE_REPORT
+        - GDPR_EXPORT
+      example: GUEST_REGISTRY
+    propertyId:
+      type: string
+      format: uuid
+    startDate:
+      type: string
+      format: date
+    endDate:
+      type: string
+      format: date
+    status:
+      type: string
+      enum:
+        - GENERATING
+        - COMPLETED
+        - FAILED
+        - SUBMITTED
+      example: COMPLETED
+    fileUrl:
+      type: string
+      format: uri
+      readOnly: true
+    submittedTo:
+      type: string
+      description: Authority/agency submitted to
+    submittedAt:
+      type: string
+      format: date-time
+    generatedAt:
+      type: string
+      format: date-time
+      readOnly: true
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+
+PropertyCertification:
+  type: object
+  description: Property certification or license
+  required:
+    - certificationId
+    - propertyId
+    - type
+    - issuedDate
+    - expiryDate
+  properties:
+    certificationId:
+      type: string
+      format: uuid
+      readOnly: true
+    propertyId:
+      type: string
+      format: uuid
+    type:
+      type: string
+      enum:
+        - BUSINESS_LICENSE
+        - HEALTH_PERMIT
+        - FIRE_SAFETY
+        - LIQUOR_LICENSE
+        - TOURISM_CERTIFICATION
+        - ENVIRONMENTAL
+        - ACCESSIBILITY
+        - OTHER
+      example: BUSINESS_LICENSE
+    name:
+      type: string
+      example: Business Operating License
+    certificateNumber:
+      type: string
+      example: BL-2025-12345
+    issuingAuthority:
+      type: string
+      example: City of San Francisco
+    issuedDate:
+      type: string
+      format: date
+    expiryDate:
+      type: string
+      format: date
+    status:
+      type: string
+      enum:
+        - ACTIVE
+        - EXPIRED
+        - SUSPENDED
+        - REVOKED
+      example: ACTIVE
+    documentUrl:
+      type: string
+      format: uri
+    notes:
+      type: string
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+
+GDPRRequest:
+  type: object
+  description: GDPR data request
+  required:
+    - requestId
+    - guestId
+    - type
+  properties:
+    requestId:
+      type: string
+      format: uuid
+      readOnly: true
+    guestId:
+      type: string
+      format: uuid
+    type:
+      type: string
+      enum:
+        - DATA_EXPORT
+        - DATA_DELETION
+        - DATA_CORRECTION
+      example: DATA_EXPORT
+    status:
+      type: string
+      enum:
+        - SUBMITTED
+        - PROCESSING
+        - COMPLETED
+        - REJECTED
+      example: SUBMITTED
+    requestedAt:
+      type: string
+      format: date-time
+      readOnly: true
+    completedAt:
+      type: string
+      format: date-time
+    dataPackageUrl:
+      type: string
+      format: uri
+      description: URL to download exported data
+    notes:
+      type: string
+

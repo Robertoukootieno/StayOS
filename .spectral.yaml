@@ -1,0 +1,22 @@
+extends: ["spectral:oas"]
+
+rules:
+  # Enforce operation IDs
+  operation-operationId: error
+
+  # Enforce descriptions
+  operation-description: warn
+  info-description: error
+
+  # Enforce examples
+  operation-success-response: warn
+
+  # Enforce tags
+  operation-tags: error
+
+  # Naming conventions
+  path-keys-no-trailing-slash: error
+
+  # Response codes
+  no-$ref-siblings: error
+

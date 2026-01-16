@@ -1,0 +1,722 @@
+Property:
+  type: object
+  description: Hospitality property (hotel, hostel, resort)
+  required:
+  - name
+  - classification
+  - location
+  - timezone
+  properties:
+    propertyId:
+      type: string
+      format: uuid
+      readOnly: true
+      description: Unique property identifier
+      example: 550e8400-e29b-41d4-a716-446655440000
+    organizationId:
+      type: string
+      format: uuid
+      description: Parent organization identifier
+      example: 660e8400-e29b-41d4-a716-446655440000
+    name:
+      type: string
+      minLength: 1
+      maxLength: 200
+      description: Property name
+      example: Grand Plaza Hotel
+    classification:
+      type: string
+      enum:
+      - HOTEL
+      - HOSTEL
+      - RESORT
+      - BOUTIQUE
+      - MOTEL
+      - BED_AND_BREAKFAST
+      - VACATION_RENTAL
+      description: Property classification
+      example: HOTEL
+    starRating:
+      type: number
+      format: float
+      minimum: 0
+      maximum: 5
+      description: Star rating (0-5)
+      example: 4.5
+    location:
+      $ref: 'common.yaml#/Address'
+    coordinates:
+      $ref: 'common.yaml#/GeoCoordinates'
+    timezone:
+      type: string
+      description: IANA timezone identifier (immutable)
+      example: America/New_York
+    operationalStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - SUSPENDED
+      - CLOSED
+      description: Current operational status
+      default: ACTIVE
+    policies:
+      $ref: 'property.yaml#/PropertyPolicies'
+    amenities:
+      type: array
+      items:
+        type: string
+      description: Property-level amenities
+      example:
+      - WIFI
+      - PARKING
+      - POOL
+      - GYM
+      - RESTAURANT
+      - SPA
+    certifications:
+      type: array
+      items:
+        $ref: 'property.yaml#/Certification'
+    contactInfo:
+      $ref: 'common.yaml#/ContactInfo'
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+    links:
+      type: object
+      readOnly: true
+      description: HATEOAS links
+      properties:
+        self:
+          type: string
+          format: uri
+        inventoryUnits:
+          type: string
+          format: uri
+        rateStrategies:
+          type: string
+          format: uri
+        reservations:
+          type: string
+          format: uri
+PropertyPolicies:
+  type: object
+  description: Property-level policies
+  properties:
+    checkInTime:
+      type: string
+      pattern: ^([01]\d|2[0-3]):([0-5]\d)$
+      description: Default check-in time (HH:mm)
+      example: '15:00'
+    checkOutTime:
+      type: string
+      pattern: ^([01]\d|2[0-3]):([0-5]\d)$
+      description: Default check-out time (HH:mm)
+      example: '11:00'
+    lateCheckoutFee:
+      $ref: 'common.yaml#/Money'
+    cancellationPolicy:
+      $ref: 'property.yaml#/CancellationPolicy'
+    childPolicy:
+      type: object
+      properties:
+        childrenAllowed:
+          type: boolean
+          default: true
+        freeChildAge:
+          type: integer
+          description: Maximum age for free child stay
+          example: 12
+    petPolicy:
+      type: object
+      properties:
+        petsAllowed:
+          type: boolean
+          default: false
+        petFee:
+          $ref: 'common.yaml#/Money'
+        petTypes:
+          type: array
+          items:
+            type: string
+            enum:
+            - DOG
+            - CAT
+            - BIRD
+            - OTHER
+    smokingPolicy:
+      type: string
+      enum:
+      - NON_SMOKING
+      - SMOKING_ALLOWED
+      - DESIGNATED_AREAS
+      default: NON_SMOKING
+CancellationPolicy:
+  type: object
+  description: Cancellation policy terms
+  required:
+  - refundability
+  properties:
+    refundability:
+      type: string
+      enum:
+      - FULLY_REFUNDABLE
+      - PARTIALLY_REFUNDABLE
+      - NON_REFUNDABLE
+      example: FULLY_REFUNDABLE
+    freeCancellationHours:
+      type: integer
+      description: Hours before check-in for free cancellation
+      example: 24
+    penaltySchedule:
+      type: array
+      items:
+        type: object
+        properties:
+          hoursBeforeCheckIn:
+            type: integer
+            example: 24
+          penaltyType:
+            type: string
+            enum:
+            - PERCENTAGE
+            - FIXED_AMOUNT
+            - NIGHTS
+          penaltyValue:
+            type: number
+            example: 50.0
+          description:
+            type: string
+            example: 50% charge if cancelled within 24 hours
+Certification:
+  type: object
+  description: Property certification or license
+  required:
+  - type
+  - issuedBy
+  - expiryDate
+  properties:
+    certificationType:
+      type: string
+      enum:
+      - BUSINESS_LICENSE
+      - HEALTH_PERMIT
+      - FIRE_SAFETY
+      - ISO_CERTIFICATION
+      - SUSTAINABILITY
+      - ACCESSIBILITY
+      example: BUSINESS_LICENSE
+    certificateNumber:
+      type: string
+      example: BL-2025-12345
+    issuedBy:
+      type: string
+      description: Issuing authority
+      example: City of San Francisco
+    issuedDate:
+      type: string
+      format: date
+    expiryDate:
+      type: string
+      format: date
+      example: '2026-12-31'
+    documentUrl:
+      type: string
+      format: uri
+      description: URL to certificate document
+InventoryUnit:
+  type: object
+  description: Sellable accommodation unit (room, bed, suite)
+  required:
+  - propertyId
+  - unitNumber
+  - unitTypeId
+  properties:
+    inventoryUnitId:
+      type: string
+      format: uuid
+      readOnly: true
+      example: 770e8400-e29b-41d4-a716-446655440000
+    propertyId:
+      type: string
+      format: uuid
+      example: 550e8400-e29b-41d4-a716-446655440000
+    unitNumber:
+      type: string
+      description: Human-readable unit identifier
+      example: '101'
+    unitTypeId:
+      type: string
+      format: uuid
+      description: Reference to unit type classification
+      example: 880e8400-e29b-41d4-a716-446655440000
+    unitType:
+      $ref: 'property.yaml#/UnitType'
+    floor:
+      type: integer
+      minimum: -5
+      maximum: 200
+      example: 1
+    physicalStatus:
+      type: string
+      enum:
+      - OPERATIONAL
+      - MAINTENANCE
+      - RENOVATION
+      - DECOMMISSIONED
+      default: OPERATIONAL
+    operationalStatus:
+      type: string
+      enum:
+      - AVAILABLE
+      - OCCUPIED
+      - BLOCKED
+      - OUT_OF_SERVICE
+      default: AVAILABLE
+    accessibility:
+      $ref: 'property.yaml#/AccessibilityFeatures'
+    lastMaintenanceDate:
+      type: string
+      format: date
+      example: '2025-11-15'
+    nextScheduledMaintenance:
+      type: string
+      format: date
+      example: '2026-02-15'
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+    links:
+      type: object
+      readOnly: true
+      properties:
+        self:
+          type: string
+          format: uri
+        property:
+          type: string
+          format: uri
+        availability:
+          type: string
+          format: uri
+        currentReservation:
+          type: string
+          format: uri
+UnitType:
+  type: object
+  description: Reusable unit type classification
+  required:
+  - name
+  - capacity
+  properties:
+    unitTypeId:
+      type: string
+      format: uuid
+      readOnly: true
+      example: 880e8400-e29b-41d4-a716-446655440000
+    propertyId:
+      type: string
+      format: uuid
+      example: 550e8400-e29b-41d4-a716-446655440000
+    name:
+      type: string
+      description: Unit type name
+      example: Deluxe King Room
+    description:
+      type: string
+      example: Spacious room with king bed and city view
+    capacity:
+      $ref: 'property.yaml#/GuestCapacity'
+    bedConfiguration:
+      type: array
+      items:
+        type: object
+        properties:
+          bedType:
+            type: string
+            enum:
+            - KING
+            - QUEEN
+            - DOUBLE
+            - TWIN
+            - SINGLE
+            - SOFA_BED
+            - BUNK
+          quantity:
+            type: integer
+            minimum: 1
+      example:
+      - bedType: KING
+        quantity: 1
+    size:
+      type: object
+      properties:
+        value:
+          type: number
+          format: float
+        unit:
+          type: string
+          enum:
+          - SQM
+          - SQFT
+      example:
+        value: 35
+        unit: SQM
+    amenities:
+      type: array
+      items:
+        type: string
+      example:
+      - WIFI
+      - TV
+      - MINIBAR
+      - SAFE
+      - COFFEE_MAKER
+      - BALCONY
+    photos:
+      type: array
+      items:
+        type: object
+        properties:
+          url:
+            type: string
+            format: uri
+          caption:
+            type: string
+          isPrimary:
+            type: boolean
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+GuestCapacity:
+  type: object
+  description: Guest capacity configuration
+  required:
+  - maxAdults
+  properties:
+    maxAdults:
+      type: integer
+      minimum: 1
+      example: 2
+    maxChildren:
+      type: integer
+      minimum: 0
+      example: 1
+    maxOccupancy:
+      type: integer
+      minimum: 1
+      description: Total maximum occupancy
+      example: 3
+    extraBedAvailable:
+      type: boolean
+      default: false
+    extraBedCharge:
+      $ref: 'common.yaml#/Money'
+AccessibilityFeatures:
+  type: object
+  description: Accessibility features for guests with disabilities
+  properties:
+    wheelchairAccessible:
+      type: boolean
+      default: false
+    hearingAccessible:
+      type: boolean
+      default: false
+    visualAccessible:
+      type: boolean
+      default: false
+    features:
+      type: array
+      items:
+        type: string
+        enum:
+        - ROLL_IN_SHOWER
+        - GRAB_BARS
+        - LOWERED_SINK
+        - VISUAL_ALARM
+        - HEARING_LOOP
+        - BRAILLE_SIGNAGE
+        - ACCESSIBLE_PARKING
+      example:
+      - ROLL_IN_SHOWER
+      - GRAB_BARS
+RateStrategy:
+  type: object
+  description: Pricing strategy with dynamic rate management
+  required:
+  - propertyId
+  - name
+  - strategyType
+  - pricingModel
+  properties:
+    rateStrategyId:
+      type: string
+      format: uuid
+      readOnly: true
+      example: 990e8400-e29b-41d4-a716-446655440000
+    propertyId:
+      type: string
+      format: uuid
+      example: 550e8400-e29b-41d4-a716-446655440000
+    name:
+      type: string
+      example: Standard Flexible Rate
+    description:
+      type: string
+      example: Fully refundable rate with flexible cancellation
+    strategyType:
+      type: string
+      enum:
+      - STANDARD
+      - DYNAMIC
+      - PROMOTIONAL
+      - CORPORATE
+      - GROUP
+      - PACKAGE
+      example: STANDARD
+    isActive:
+      type: boolean
+      default: true
+    applicability:
+      $ref: 'property.yaml#/ApplicabilityRules'
+    pricingModel:
+      $ref: 'property.yaml#/PricingModel'
+    cancellationTerms:
+      $ref: 'property.yaml#/CancellationPolicy'
+    channelDistribution:
+      type: array
+      items:
+        $ref: 'property.yaml#/ChannelDistribution'
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+    links:
+      type: object
+      readOnly: true
+      properties:
+        self:
+          type: string
+          format: uri
+        property:
+          type: string
+          format: uri
+ApplicabilityRules:
+  type: object
+  description: Rules defining when rate strategy applies
+  properties:
+    validDateRange:
+      type: object
+      properties:
+        startDate:
+          type: string
+          format: date
+          example: '2025-01-01'
+        endDate:
+          type: string
+          format: date
+          example: '2025-12-31'
+    daysOfWeek:
+      type: array
+      items:
+        type: string
+        enum:
+        - MONDAY
+        - TUESDAY
+        - WEDNESDAY
+        - THURSDAY
+        - FRIDAY
+        - SATURDAY
+        - SUNDAY
+      example:
+      - MONDAY
+      - TUESDAY
+      - WEDNESDAY
+      - THURSDAY
+    minimumStayDuration:
+      type: integer
+      minimum: 1
+      description: Minimum nights required
+      example: 2
+    maximumStayDuration:
+      type: integer
+      minimum: 1
+      description: Maximum nights allowed
+      example: 14
+    advanceBookingWindow:
+      type: object
+      properties:
+        minimumDays:
+          type: integer
+          description: Minimum days before check-in
+          example: 0
+        maximumDays:
+          type: integer
+          description: Maximum days before check-in
+          example: 365
+    blackoutDates:
+      type: array
+      items:
+        type: string
+        format: date
+      description: Dates when rate is not available
+      example:
+      - '2025-12-24'
+      - '2025-12-25'
+      - '2025-12-31'
+PricingModel:
+  type: object
+  description: Pricing calculation model
+  required:
+  - baseRates
+  properties:
+    baseRates:
+      type: array
+      description: Base rates per unit type
+      items:
+        type: object
+        required:
+        - unitTypeId
+        - rate
+        properties:
+          unitTypeId:
+            type: string
+            format: uuid
+          rate:
+            $ref: 'common.yaml#/Money'
+    occupancyPricing:
+      type: object
+      description: Per-person pricing adjustments
+      properties:
+        enabled:
+          type: boolean
+          default: false
+        baseOccupancy:
+          type: integer
+          example: 2
+        additionalGuestCharge:
+          $ref: 'common.yaml#/Money'
+    seasonalAdjustments:
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+            example: Summer Peak
+          startDate:
+            type: string
+            format: date
+          endDate:
+            type: string
+            format: date
+          adjustmentType:
+            type: string
+            enum:
+            - PERCENTAGE
+            - FIXED_AMOUNT
+          adjustmentValue:
+            type: number
+            example: 20.0
+          description:
+            type: string
+    lengthOfStayDiscounts:
+      type: array
+      items:
+        type: object
+        properties:
+          minimumNights:
+            type: integer
+            example: 7
+          discountType:
+            type: string
+            enum:
+            - PERCENTAGE
+            - FIXED_AMOUNT
+            - FREE_NIGHTS
+          discountValue:
+            type: number
+            example: 15.0
+          description:
+            type: string
+            example: 15% off for 7+ night stays
+    taxes:
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+            example: City Tax
+          type:
+            type: string
+            enum:
+            - PERCENTAGE
+            - PER_NIGHT
+            - PER_PERSON_PER_NIGHT
+          rate:
+            type: number
+            example: 14.0
+          isIncluded:
+            type: boolean
+            description: Whether tax is included in displayed rate
+            default: false
+    fees:
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+            example: Resort Fee
+          type:
+            type: string
+            enum:
+            - PER_STAY
+            - PER_NIGHT
+            - PER_PERSON
+          amount:
+            $ref: 'common.yaml#/Money'
+          isOptional:
+            type: boolean
+            default: false
+ChannelDistribution:
+  type: object
+  description: Channel-specific distribution settings
+  required:
+  - channelId
+  properties:
+    channelId:
+      type: string
+      format: uuid
+      example: aa0e8400-e29b-41d4-a716-446655440000
+    channelName:
+      type: string
+      readOnly: true
+      example: Booking.com
+    isEnabled:
+      type: boolean
+      default: true
+    markup:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - PERCENTAGE
+          - FIXED_AMOUNT
+        value:
+          type: number
+          example: 15.0
+    commission:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - PERCENTAGE
+          - FIXED_AMOUNT
+        value:
+          type: number
+          example: 18.0
+        paidBy:
+          type: string
+          enum:
+          - PROPERTY
+          - GUEST
+          default: PROPERTY

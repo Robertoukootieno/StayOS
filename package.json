@@ -1,0 +1,34 @@
+{
+  "name": "stayos",
+  "version": "4.0.0",
+  "description": "StayOS - Complete Property Management System with 100% API Coverage",
+  "private": true,
+  "workspaces": [
+    "backend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=backend",
+    "build": "npm run build --workspace=backend",
+    "test": "npm run test --workspace=backend",
+    "lint": "npm run lint --workspace=backend",
+    "api:validate": "swagger-cli validate api/openapi.yaml",
+    "api:bundle": "swagger-cli bundle api/openapi.yaml --outfile api/openapi-bundled.yaml --type yaml",
+    "api:lint": "redocly lint api/openapi.yaml",
+    "api:serve": "node api/serve.js",
+    "api:docs": "node api/serve.js 3000",
+    "api:build": "npm run api:validate && npm run api:bundle",
+    "db:setup": "bash scripts/setup-database.sh",
+    "db:setup:simple": "bash scripts/setup-database-simple.sh",
+    "sdk:generate": "bash scripts/generate-sdks.sh",
+    "sdk:typescript": "bash scripts/generate-sdks.sh typescript",
+    "sdk:python": "bash scripts/generate-sdks.sh python",
+    "sdk:java": "bash scripts/generate-sdks.sh java",
+    "sdk:go": "bash scripts/generate-sdks.sh go",
+    "sdk:csharp": "bash scripts/generate-sdks.sh csharp",
+    "sdk:all": "bash scripts/generate-sdks.sh all"
+  },
+  "devDependencies": {
+    "@apidevtools/swagger-cli": "^4.0.4",
+    "@stoplight/spectral-cli": "^6.15.0"
+  }
+}

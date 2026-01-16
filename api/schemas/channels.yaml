@@ -1,0 +1,170 @@
+Channel:
+  type: object
+  description: Distribution channel connection
+  required:
+    - channelId
+    - propertyId
+    - channelType
+    - status
+  properties:
+    channelId:
+      type: string
+      format: uuid
+      readOnly: true
+    propertyId:
+      type: string
+      format: uuid
+    channelType:
+      type: string
+      enum:
+        - BOOKING_COM
+        - EXPEDIA
+        - AIRBNB
+        - AGODA
+        - HOTELS_COM
+        - DIRECT_BOOKING
+        - GDS
+        - OTHER
+      example: BOOKING_COM
+    channelName:
+      type: string
+      example: Booking.com
+    status:
+      type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
+        - SUSPENDED
+        - ERROR
+      example: ACTIVE
+    credentials:
+      type: object
+      writeOnly: true
+      properties:
+        apiKey:
+          type: string
+        apiSecret:
+          type: string
+        hotelId:
+          type: string
+    configuration:
+      type: object
+      properties:
+        autoAcceptBookings:
+          type: boolean
+          default: false
+        syncInventory:
+          type: boolean
+          default: true
+        syncRates:
+          type: boolean
+          default: true
+        syncRestrictions:
+          type: boolean
+          default: true
+    lastSyncAt:
+      type: string
+      format: date-time
+      readOnly: true
+    syncStatus:
+      type: string
+      enum:
+        - SYNCED
+        - SYNCING
+        - ERROR
+        - NEVER_SYNCED
+      readOnly: true
+    errorMessage:
+      type: string
+      readOnly: true
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+    links:
+      type: object
+      readOnly: true
+      properties:
+        self:
+          type: string
+          format: uri
+        mappings:
+          type: string
+          format: uri
+        performance:
+          type: string
+          format: uri
+
+ChannelMapping:
+  type: object
+  description: Rate and inventory mapping for channel
+  required:
+    - channelId
+    - propertyId
+  properties:
+    channelId:
+      type: string
+      format: uuid
+    propertyId:
+      type: string
+      format: uuid
+    unitTypeMappings:
+      type: array
+      items:
+        type: object
+        properties:
+          internalUnitTypeId:
+            type: string
+            format: uuid
+          channelRoomTypeId:
+            type: string
+          channelRoomTypeName:
+            type: string
+    rateStrategyMappings:
+      type: array
+      items:
+        type: object
+        properties:
+          internalRateStrategyId:
+            type: string
+            format: uuid
+          channelRatePlanId:
+            type: string
+          channelRatePlanName:
+            type: string
+
+ChannelPerformance:
+  type: object
+  description: Channel performance metrics
+  required:
+    - channelId
+    - startDate
+    - endDate
+  properties:
+    channelId:
+      type: string
+      format: uuid
+    startDate:
+      type: string
+      format: date
+    endDate:
+      type: string
+      format: date
+    bookings:
+      type: integer
+      description: Total bookings
+    revenue:
+      $ref: 'common.yaml#/Money'
+    commission:
+      $ref: 'common.yaml#/Money'
+    netRevenue:
+      $ref: 'common.yaml#/Money'
+    averageBookingValue:
+      $ref: 'common.yaml#/Money'
+    cancellationRate:
+      type: number
+      format: float
+      description: Percentage
+    conversionRate:
+      type: number
+      format: float
+      description: Percentage
+

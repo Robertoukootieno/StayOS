@@ -1,0 +1,81 @@
+AvailabilityCalendar:
+  type: object
+  description: Inventory availability calendar
+  required:
+  - inventoryUnitId
+  - dateRange
+  properties:
+    inventoryUnitId:
+      type: string
+      format: uuid
+      example: 770e8400-e29b-41d4-a716-446655440000
+    dateRange:
+      type: object
+      properties:
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+    slots:
+      type: array
+      items:
+        $ref: 'availability.yaml#/AvailabilitySlot'
+AvailabilitySlot:
+  type: object
+  description: Single day availability slot
+  required:
+  - date
+  - status
+  properties:
+    date:
+      type: string
+      format: date
+      example: '2025-12-20'
+    status:
+      type: string
+      enum:
+      - AVAILABLE
+      - RESERVED
+      - BLOCKED
+      - SOLD_OUT
+      example: AVAILABLE
+    restrictions:
+      type: object
+      properties:
+        closedToArrival:
+          type: boolean
+          default: false
+        closedToDeparture:
+          type: boolean
+          default: false
+        minimumStay:
+          type: integer
+          minimum: 1
+        maximumStay:
+          type: integer
+          minimum: 1
+    allocations:
+      type: array
+      description: Channel-specific allocations
+      items:
+        type: object
+        properties:
+          channelId:
+            type: string
+            format: uuid
+          channelName:
+            type: string
+          allocated:
+            type: integer
+            description: Units allocated to this channel
+          sold:
+            type: integer
+            description: Units sold through this channel
+    rate:
+      $ref: 'common.yaml#/Money'
+      description: Rate for this date (if applicable)
+    notes:
+      type: string
+      description: Internal notes for this date

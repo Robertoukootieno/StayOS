@@ -1,0 +1,223 @@
+ProblemDetails:
+  type: object
+  description: RFC 7807 Problem Details for HTTP APIs
+  required:
+  - type
+  - title
+  - status
+  properties:
+    type:
+      type: string
+      format: uri
+      description: URI reference identifying the problem type
+      example: https://api.stayos.com/errors/validation-error
+    title:
+      type: string
+      description: Short, human-readable summary
+      example: Validation Failed
+    status:
+      type: integer
+      description: HTTP status code
+      example: 400
+    detail:
+      type: string
+      description: Human-readable explanation
+      example: One or more validation errors occurred
+    instance:
+      type: string
+      format: uri
+      description: URI reference identifying the specific occurrence
+      example: https://api.stayos.com/v1/reservations
+    traceId:
+      type: string
+      format: uuid
+      description: Unique identifier for tracing
+    errors:
+      type: array
+      description: Detailed validation errors
+      items:
+        type: object
+        properties:
+          field:
+            type: string
+            description: Field name that failed validation
+          code:
+            type: string
+            description: Machine-readable error code
+          message:
+            type: string
+            description: Human-readable error message
+PaginatedResponse:
+  type: object
+  description: Generic paginated response wrapper
+  required:
+  - data
+  - pagination
+  properties:
+    data:
+      type: array
+      items: {}
+      description: Array of resources
+    pagination:
+      type: object
+      required:
+      - pageSize
+      - hasMore
+      properties:
+        pageSize:
+          type: integer
+          description: Number of items in current page
+          example: 20
+        cursor:
+          type:
+          - string
+          - 'null'
+          description: Cursor for next page (null if no more pages)
+          example: eyJpZCI6MTIzNDU2fQ==
+        hasMore:
+          type: boolean
+          description: Whether more pages are available
+          example: true
+        totalCount:
+          type:
+          - integer
+          - 'null'
+          description: Total number of items (optional, expensive to compute)
+          example: 150
+    links:
+      type: object
+      description: HATEOAS navigation links
+      properties:
+        self:
+          type: string
+          format: uri
+          example: https://api.stayos.com/v1/reservations?pageSize=20
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: https://api.stayos.com/v1/reservations?pageSize=20&cursor=eyJpZCI6MTIzNDU2fQ==
+        prev:
+          type:
+          - string
+          - 'null'
+          format: uri
+Money:
+  type: object
+  description: Monetary amount with currency
+  required:
+  - amount
+  - currency
+  properties:
+    amount:
+      type: string
+      pattern: ^\d+\.\d{2}$
+      description: Decimal amount (always 2 decimal places)
+      example: '125.50'
+    currency:
+      type: string
+      pattern: ^[A-Z]{3}$
+      description: ISO 4217 currency code
+      example: USD
+Address:
+  type: object
+  description: Physical address
+  required:
+  - country
+  properties:
+    street:
+      type: string
+      example: 123 Main Street
+    street2:
+      type: string
+      description: Apartment, suite, etc.
+      example: Suite 100
+    city:
+      type: string
+      example: San Francisco
+    state:
+      type: string
+      description: State/Province/Region
+      example: CA
+    postalCode:
+      type: string
+      example: '94102'
+    country:
+      type: string
+      pattern: ^[A-Z]{2}$
+      description: ISO 3166-1 alpha-2 country code
+      example: US
+GeoCoordinates:
+  type: object
+  description: Geographic coordinates
+  required:
+  - latitude
+  - longitude
+  properties:
+    latitude:
+      type: number
+      format: double
+      minimum: -90
+      maximum: 90
+      example: 37.7749
+    longitude:
+      type: number
+      format: double
+      minimum: -180
+      maximum: 180
+      example: -122.4194
+ContactInfo:
+  type: object
+  description: Contact information
+  required:
+  - email
+  properties:
+    email:
+      type: string
+      format: email
+      example: guest@example.com
+    phone:
+      type: string
+      pattern: ^\+[1-9]\d{1,14}$
+      description: E.164 format phone number
+      example: '+14155551234'
+    alternatePhone:
+      type: string
+      pattern: ^\+[1-9]\d{1,14}$
+      example: '+14155555678'
+    preferredContactMethod:
+      type: string
+      enum:
+      - EMAIL
+      - PHONE
+      - SMS
+      - WHATSAPP
+      default: EMAIL
+AuditMetadata:
+  type: object
+  description: Audit trail metadata
+  readOnly: true
+  properties:
+    createdAt:
+      type: string
+      format: date-time
+      description: Creation timestamp (ISO 8601)
+      example: '2025-12-18T10:30:00Z'
+    createdBy:
+      type: string
+      format: uuid
+      description: User ID who created the resource
+    updatedAt:
+      type: string
+      format: date-time
+      description: Last update timestamp
+      example: '2025-12-18T14:45:00Z'
+    updatedBy:
+      type: string
+      format: uuid
+      description: User ID who last updated the resource
+    version:
+      type: integer
+      description: Version number for optimistic locking
+      example: 3

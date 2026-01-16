@@ -1,0 +1,13 @@
+apis:
+  stayos@v1:
+    root: docs/api/openapi.yaml
+    
+lint:
+  extends:
+    - recommended
+  rules:
+    no-server-example.com: warning
+    operation-4xx-response: warning
+    no-required-schema-properties-undefined: warning
+    no-unused-components: warning
+

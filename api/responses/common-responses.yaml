@@ -1,0 +1,124 @@
+NoContent:
+  description: Successful operation with no content
+  headers:
+    X-Request-Id:
+      $ref: '../headers/common-headers.yaml#/X-Request-Id'
+BadRequest:
+  description: Bad request - validation error
+  content:
+    application/problem+json:
+      schema:
+        $ref: '../schemas/common.yaml#/ProblemDetails'
+      example:
+        type: https://api.stayos.com/errors/validation-error
+        title: Validation Failed
+        status: 400
+        detail: One or more validation errors occurred
+        instance: https://api.stayos.com/v1/reservations
+        traceId: 550e8400-e29b-41d4-a716-446655440000
+        errors:
+        - field: checkOutDate
+          code: INVALID_DATE_RANGE
+          message: Check-out date must be after check-in date
+Unauthorized:
+  description: Unauthorized - authentication required
+  content:
+    application/problem+json:
+      schema:
+        $ref: '../schemas/common.yaml#/ProblemDetails'
+      example:
+        type: https://api.stayos.com/errors/unauthorized
+        title: Unauthorized
+        status: 401
+        detail: Valid authentication credentials required
+        instance: https://api.stayos.com/v1/reservations
+        traceId: 550e8400-e29b-41d4-a716-446655440000
+Forbidden:
+  description: Forbidden - insufficient permissions
+  content:
+    application/problem+json:
+      schema:
+        $ref: '../schemas/common.yaml#/ProblemDetails'
+      example:
+        type: https://api.stayos.com/errors/forbidden
+        title: Forbidden
+        status: 403
+        detail: Insufficient permissions to access this resource
+        instance: https://api.stayos.com/v1/properties/123
+        traceId: 550e8400-e29b-41d4-a716-446655440000
+NotFound:
+  description: Resource not found
+  content:
+    application/problem+json:
+      schema:
+        $ref: '../schemas/common.yaml#/ProblemDetails'
+      example:
+        type: https://api.stayos.com/errors/not-found
+        title: Not Found
+        status: 404
+        detail: The requested resource was not found
+        instance: https://api.stayos.com/v1/reservations/123
+        traceId: 550e8400-e29b-41d4-a716-446655440000
+Conflict:
+  description: Conflict - resource state conflict
+  content:
+    application/problem+json:
+      schema:
+        $ref: '../schemas/common.yaml#/ProblemDetails'
+      example:
+        type: https://api.stayos.com/errors/conflict
+        title: Conflict
+        status: 409
+        detail: Inventory unit already booked for selected dates
+        instance: https://api.stayos.com/v1/reservations
+        traceId: 550e8400-e29b-41d4-a716-446655440000
+PreconditionFailed:
+  description: Precondition failed - optimistic locking failure
+  content:
+    application/problem+json:
+      schema:
+        $ref: '../schemas/common.yaml#/ProblemDetails'
+      example:
+        type: https://api.stayos.com/errors/precondition-failed
+        title: Precondition Failed
+        status: 412
+        detail: Resource has been modified by another request
+        instance: https://api.stayos.com/v1/reservations/123
+        traceId: 550e8400-e29b-41d4-a716-446655440000
+TooManyRequests:
+  description: Too many requests - rate limit exceeded
+  headers:
+    X-RateLimit-Limit:
+      $ref: '../headers/common-headers.yaml#/X-RateLimit-Limit'
+    X-RateLimit-Remaining:
+      $ref: '../headers/common-headers.yaml#/X-RateLimit-Remaining'
+    X-RateLimit-Reset:
+      $ref: '../headers/common-headers.yaml#/X-RateLimit-Reset'
+    Retry-After:
+      description: Seconds until rate limit resets
+      schema:
+        type: integer
+  content:
+    application/problem+json:
+      schema:
+        $ref: '../schemas/common.yaml#/ProblemDetails'
+      example:
+        type: https://api.stayos.com/errors/rate-limit-exceeded
+        title: Too Many Requests
+        status: 429
+        detail: Rate limit exceeded. Please retry after 60 seconds
+        instance: https://api.stayos.com/v1/reservations
+        traceId: 550e8400-e29b-41d4-a716-446655440000
+InternalServerError:
+  description: Internal server error
+  content:
+    application/problem+json:
+      schema:
+        $ref: '../schemas/common.yaml#/ProblemDetails'
+      example:
+        type: https://api.stayos.com/errors/internal-error
+        title: Internal Server Error
+        status: 500
+        detail: An unexpected error occurred
+        instance: https://api.stayos.com/v1/reservations
+        traceId: 550e8400-e29b-41d4-a716-446655440000

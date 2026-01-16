@@ -1,0 +1,21 @@
+{
+  "propertyId": "550e8400-e29b-41d4-a716-446655440000",
+  "inventoryUnitId": "770e8400-e29b-41d4-a716-446655440000",
+  "guestId": "880e8400-e29b-41d4-a716-446655440000",
+  "checkInDate": "2025-12-25",
+  "checkOutDate": "2025-12-28",
+  "numberOfGuests": {
+    "adults": 2,
+    "children": 1,
+    "infants": 0
+  },
+  "rateCode": "STANDARD",
+  "totalAmount": {
+    "amount": "450.00",
+    "currency": "USD"
+  },
+  "specialRequests": "Late check-in after 10 PM",
+  "source": "DIRECT",
+  "channelId": null
+}
+

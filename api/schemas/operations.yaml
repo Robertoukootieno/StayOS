@@ -1,0 +1,537 @@
+HousekeepingTask:
+  type: object
+  description: Housekeeping task for room cleaning
+  required:
+    - taskId
+    - propertyId
+    - inventoryUnitId
+    - taskType
+    - status
+  properties:
+    taskId:
+      type: string
+      format: uuid
+      readOnly: true
+    propertyId:
+      type: string
+      format: uuid
+    inventoryUnitId:
+      type: string
+      format: uuid
+      description: Room/unit to clean
+    taskType:
+      type: string
+      enum:
+        - CHECKOUT_CLEAN
+        - STAY_OVER
+        - DEEP_CLEAN
+        - TURNDOWN
+        - INSPECTION
+      example: CHECKOUT_CLEAN
+    priority:
+      type: string
+      enum:
+        - LOW
+        - NORMAL
+        - HIGH
+        - URGENT
+      default: NORMAL
+    status:
+      type: string
+      enum:
+        - PENDING
+        - ASSIGNED
+        - IN_PROGRESS
+        - COMPLETED
+        - VERIFIED
+        - FAILED
+      example: PENDING
+    assignedTo:
+      type: string
+      format: uuid
+      description: Staff member ID
+    scheduledFor:
+      type: string
+      format: date-time
+    startedAt:
+      type: string
+      format: date-time
+    completedAt:
+      type: string
+      format: date-time
+    verifiedAt:
+      type: string
+      format: date-time
+    verifiedBy:
+      type: string
+      format: uuid
+    notes:
+      type: string
+    issues:
+      type: array
+      items:
+        type: string
+      description: Issues found during cleaning
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+
+MaintenanceRequest:
+  type: object
+  description: Maintenance or repair request
+  required:
+    - requestId
+    - propertyId
+    - category
+    - priority
+    - status
+  properties:
+    requestId:
+      type: string
+      format: uuid
+      readOnly: true
+    propertyId:
+      type: string
+      format: uuid
+    inventoryUnitId:
+      type: string
+      format: uuid
+      description: Specific room/unit (if applicable)
+    category:
+      type: string
+      enum:
+        - PLUMBING
+        - ELECTRICAL
+        - HVAC
+        - APPLIANCE
+        - STRUCTURAL
+        - SAFETY
+        - OTHER
+      example: PLUMBING
+    priority:
+      type: string
+      enum:
+        - LOW
+        - MEDIUM
+        - HIGH
+        - EMERGENCY
+      example: HIGH
+    status:
+      type: string
+      enum:
+        - SUBMITTED
+        - ASSIGNED
+        - IN_PROGRESS
+        - COMPLETED
+        - VERIFIED
+        - CANCELLED
+      example: SUBMITTED
+    title:
+      type: string
+      example: Leaking faucet in bathroom
+    description:
+      type: string
+    reportedBy:
+      type: string
+      format: uuid
+    assignedTo:
+      type: string
+      format: uuid
+      description: Technician ID
+    scheduledFor:
+      type: string
+      format: date-time
+    completedAt:
+      type: string
+      format: date-time
+    verifiedAt:
+      type: string
+      format: date-time
+    estimatedCost:
+      $ref: 'common.yaml#/Money'
+    actualCost:
+      $ref: 'common.yaml#/Money'
+    workLog:
+      type: array
+      items:
+        type: object
+        properties:
+          timestamp:
+            type: string
+            format: date-time
+          technician:
+            type: string
+            format: uuid
+          action:
+            type: string
+          notes:
+            type: string
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+
+ServiceRequest:
+  type: object
+  description: Guest service request
+  required:
+    - requestId
+    - propertyId
+    - category
+    - status
+  properties:
+    requestId:
+      type: string
+      format: uuid
+      readOnly: true
+    propertyId:
+      type: string
+      format: uuid
+    stayId:
+      type: string
+      format: uuid
+    guestId:
+      type: string
+      format: uuid
+    inventoryUnitId:
+      type: string
+      format: uuid
+    category:
+      type: string
+      enum:
+        - HOUSEKEEPING
+        - ROOM_SERVICE
+        - CONCIERGE
+        - MAINTENANCE
+        - AMENITY
+        - TRANSPORTATION
+        - OTHER
+      example: ROOM_SERVICE
+    priority:
+      type: string
+      enum:
+        - LOW
+        - NORMAL
+        - HIGH
+        - URGENT
+      default: NORMAL
+    status:
+      type: string
+      enum:
+        - SUBMITTED
+        - ACKNOWLEDGED
+        - ASSIGNED
+        - IN_PROGRESS
+        - COMPLETED
+        - CANCELLED
+      example: SUBMITTED
+    title:
+      type: string
+      example: Extra towels needed
+    description:
+      type: string
+    requestedBy:
+      type: string
+      enum:
+        - GUEST
+        - STAFF
+      default: GUEST
+    assignedTo:
+      type: string
+      format: uuid
+    acknowledgedAt:
+      type: string
+      format: date-time
+    completedAt:
+      type: string
+      format: date-time
+    guestFeedback:
+      type: object
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comments:
+          type: string
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+
+Incident:
+  type: object
+  description: Incident report
+  required:
+    - incidentId
+    - propertyId
+    - type
+    - severity
+    - status
+  properties:
+    incidentId:
+      type: string
+      format: uuid
+      readOnly: true
+    propertyId:
+      type: string
+      format: uuid
+    type:
+      type: string
+      enum:
+        - SAFETY
+        - SECURITY
+        - HEALTH
+        - PROPERTY_DAMAGE
+        - GUEST_INJURY
+        - STAFF_INJURY
+        - THEFT
+        - FIRE
+        - OTHER
+      example: SAFETY
+    severity:
+      type: string
+      enum:
+        - MINOR
+        - MODERATE
+        - MAJOR
+        - CRITICAL
+      example: MODERATE
+    status:
+      type: string
+      enum:
+        - REPORTED
+        - INVESTIGATING
+        - ACTION_TAKEN
+        - RESOLVED
+        - CLOSED
+      example: REPORTED
+    title:
+      type: string
+    description:
+      type: string
+    location:
+      type: string
+      description: Location within property
+    reportedBy:
+      type: string
+      format: uuid
+    incidentDate:
+      type: string
+      format: date-time
+    personsInvolved:
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+          role:
+            type: string
+            enum:
+              - GUEST
+              - STAFF
+              - VISITOR
+              - CONTRACTOR
+          contactInfo:
+            type: string
+    witnesses:
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+          contactInfo:
+            type: string
+          statement:
+            type: string
+    correctiveActions:
+      type: array
+      items:
+        type: object
+        properties:
+          action:
+            type: string
+          takenBy:
+            type: string
+            format: uuid
+          takenAt:
+            type: string
+            format: date-time
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+
+StaffShift:
+  type: object
+  description: Staff shift schedule
+  required:
+    - shiftId
+    - staffId
+    - propertyId
+    - shiftDate
+    - startTime
+    - endTime
+  properties:
+    shiftId:
+      type: string
+      format: uuid
+      readOnly: true
+    staffId:
+      type: string
+      format: uuid
+    propertyId:
+      type: string
+      format: uuid
+    shiftDate:
+      type: string
+      format: date
+    startTime:
+      type: string
+      format: time
+      example: '09:00:00'
+    endTime:
+      type: string
+      format: time
+      example: '17:00:00'
+    role:
+      type: string
+      enum:
+        - FRONT_DESK
+        - HOUSEKEEPING
+        - MAINTENANCE
+        - CONCIERGE
+        - MANAGER
+        - SECURITY
+      example: FRONT_DESK
+    status:
+      type: string
+      enum:
+        - SCHEDULED
+        - CLOCKED_IN
+        - ON_BREAK
+        - CLOCKED_OUT
+        - ABSENT
+      example: SCHEDULED
+    clockInTime:
+      type: string
+      format: date-time
+    clockOutTime:
+      type: string
+      format: date-time
+    breaks:
+      type: array
+      items:
+        type: object
+        properties:
+          startTime:
+            type: string
+            format: date-time
+          endTime:
+            type: string
+            format: date-time
+
+TrainingModule:
+  type: object
+  description: Staff training module
+  required:
+    - moduleId
+    - title
+    - category
+    - duration
+  properties:
+    moduleId:
+      type: string
+      format: uuid
+      readOnly: true
+    title:
+      type: string
+      example: Fire Safety Training
+    description:
+      type: string
+    category:
+      type: string
+      enum:
+        - SAFETY
+        - CUSTOMER_SERVICE
+        - TECHNICAL
+        - COMPLIANCE
+        - MANAGEMENT
+      example: SAFETY
+    duration:
+      type: integer
+      description: Duration in minutes
+      example: 60
+    content:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - VIDEO
+            - DOCUMENT
+            - INTERACTIVE
+            - IN_PERSON
+        url:
+          type: string
+          format: uri
+    assessmentRequired:
+      type: boolean
+      default: false
+    passingScore:
+      type: integer
+      minimum: 0
+      maximum: 100
+      description: Minimum score to pass (percentage)
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+
+TrainingEnrollment:
+  type: object
+  description: Staff training enrollment
+  required:
+    - enrollmentId
+    - moduleId
+    - staffId
+    - status
+  properties:
+    enrollmentId:
+      type: string
+      format: uuid
+      readOnly: true
+    moduleId:
+      type: string
+      format: uuid
+    staffId:
+      type: string
+      format: uuid
+    status:
+      type: string
+      enum:
+        - ENROLLED
+        - IN_PROGRESS
+        - COMPLETED
+        - FAILED
+        - EXPIRED
+      example: ENROLLED
+    enrolledAt:
+      type: string
+      format: date-time
+      readOnly: true
+    startedAt:
+      type: string
+      format: date-time
+    completedAt:
+      type: string
+      format: date-time
+    expiresAt:
+      type: string
+      format: date-time
+    assessmentScore:
+      type: integer
+      minimum: 0
+      maximum: 100
+    attempts:
+      type: integer
+      minimum: 0
+      description: Number of assessment attempts
+    certificateUrl:
+      type: string
+      format: uri
+      readOnly: true
+

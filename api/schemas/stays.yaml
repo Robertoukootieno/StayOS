@@ -1,0 +1,149 @@
+Stay:
+  type: object
+  description: Active guest stay (check-in to check-out)
+  required:
+    - stayId
+    - reservationId
+    - propertyId
+    - inventoryUnitId
+    - guestId
+    - checkInDate
+    - expectedCheckOutDate
+    - status
+  properties:
+    stayId:
+      type: string
+      format: uuid
+      readOnly: true
+      example: aa0e8400-e29b-41d4-a716-446655440000
+    reservationId:
+      type: string
+      format: uuid
+      description: Associated reservation
+      example: 550e8400-e29b-41d4-a716-446655440000
+    propertyId:
+      type: string
+      format: uuid
+      example: 660e8400-e29b-41d4-a716-446655440000
+    inventoryUnitId:
+      type: string
+      format: uuid
+      description: Assigned room/unit
+      example: 770e8400-e29b-41d4-a716-446655440000
+    guestId:
+      type: string
+      format: uuid
+      description: Primary guest
+      example: 880e8400-e29b-41d4-a716-446655440000
+    additionalGuests:
+      type: array
+      items:
+        type: string
+        format: uuid
+      description: Additional guest IDs
+    checkInDate:
+      type: string
+      format: date-time
+      description: Actual check-in timestamp
+      example: '2025-12-25T15:30:00Z'
+    expectedCheckOutDate:
+      type: string
+      format: date
+      example: '2025-12-28'
+    actualCheckOutDate:
+      type: string
+      format: date-time
+      description: Actual check-out timestamp
+      example: '2025-12-28T11:00:00Z'
+    status:
+      type: string
+      enum:
+        - CHECKED_IN
+        - IN_HOUSE
+        - CHECKED_OUT
+        - EXTENDED
+      example: IN_HOUSE
+    guestCount:
+      type: object
+      properties:
+        adults:
+          type: integer
+          minimum: 1
+          example: 2
+        children:
+          type: integer
+          minimum: 0
+          example: 1
+    keyCards:
+      type: array
+      items:
+        $ref: 'stays.yaml#/KeyCard'
+    incidentalCharges:
+      type: array
+      items:
+        $ref: 'billing.yaml#/LineItem'
+    specialRequests:
+      type: string
+      example: Extra pillows, late checkout
+    notes:
+      type: string
+      description: Internal staff notes
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+    links:
+      type: object
+      readOnly: true
+      properties:
+        self:
+          type: string
+          format: uri
+        reservation:
+          type: string
+          format: uri
+        guest:
+          type: string
+          format: uri
+        folio:
+          type: string
+          format: uri
+
+KeyCard:
+  type: object
+  description: Electronic key card
+  required:
+    - cardId
+    - cardNumber
+    - status
+  properties:
+    cardId:
+      type: string
+      format: uuid
+      readOnly: true
+    cardNumber:
+      type: string
+      description: Physical card number
+      example: KC-12345678
+    status:
+      type: string
+      enum:
+        - ACTIVE
+        - DEACTIVATED
+        - LOST
+        - EXPIRED
+      example: ACTIVE
+    issuedAt:
+      type: string
+      format: date-time
+      readOnly: true
+    expiresAt:
+      type: string
+      format: date-time
+      description: Card expiration
+    accessLevel:
+      type: string
+      enum:
+        - ROOM_ONLY
+        - ROOM_AND_AMENITIES
+        - FULL_ACCESS
+      default: ROOM_ONLY
+

@@ -1,0 +1,65 @@
+PageSize:
+  name: pageSize
+  in: query
+  description: Number of items per page (max 100)
+  schema:
+    type: integer
+    minimum: 1
+    maximum: 100
+    default: 20
+PageCursor:
+  name: cursor
+  in: query
+  description: Cursor for pagination (opaque token)
+  schema:
+    type: string
+PropertyId:
+  name: propertyId
+  in: path
+  required: true
+  description: Unique property identifier
+  schema:
+    type: string
+    format: uuid
+SortBy:
+  name: sortBy
+  in: query
+  description: Field to sort by
+  schema:
+    type: string
+SortOrder:
+  name: sortOrder
+  in: query
+  description: Sort order
+  schema:
+    type: string
+    enum:
+    - asc
+    - desc
+    default: asc
+Expand:
+  name: expand
+  in: query
+  description: Comma-separated list of related resources to include
+  schema:
+    type: string
+  example: property,guest,rateStrategy
+IdempotencyKey:
+  name: Idempotency-Key
+  in: header
+  description: Unique key for idempotent operations (UUID recommended)
+  schema:
+    type: string
+    format: uuid
+IfMatch:
+  name: If-Match
+  in: header
+  description: ETag for optimistic locking
+  schema:
+    type: string
+IfNoneMatch:
+  name: If-None-Match
+  in: header
+  description: ETag for conditional requests
+  schema:
+    type: string

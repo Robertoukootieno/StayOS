@@ -1,0 +1,7 @@
+packageName: "StayOS.ApiClient"
+packageVersion: "4.0.0"
+targetFramework: "netstandard2.0"
+netCoreProjectFile: true
+library: "httpclient"
+optionalProjectFile: false
+

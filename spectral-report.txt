@@ -1,0 +1,140 @@
+
+/home/robert/MY PROJECTS/stayOS/docs/api/openapi.yaml
+  260:21  warning  oas3-unused-component            Potentially unused component has been detected.                  components.parameters.PropertyIdQuery
+  268:14  warning  oas3-unused-component            Potentially unused component has been detected.                  components.parameters.DateFrom
+  276:12  warning  oas3-unused-component            Potentially unused component has been detected.                  components.parameters.DateTo
+  376:13  warning  oas3-unused-component            Potentially unused component has been detected.                  components.responses.Created
+  387:15    error  oas3-valid-media-example         "instance" property must match format "uri"                      components.responses.BadRequest.content
+  396:23    error  oas3-valid-media-example         "instance" property must match format "uri"                      components.responses.BadRequest.content.application/problem+json.example.instance
+  405:15    error  oas3-valid-media-example         "instance" property must match format "uri"                      components.responses.Unauthorized.content
+  414:23    error  oas3-valid-media-example         "instance" property must match format "uri"                      components.responses.Unauthorized.content.application/problem+json.example.instance
+  419:15    error  oas3-valid-media-example         "instance" property must match format "uri"                      components.responses.Forbidden.content
+  428:23    error  oas3-valid-media-example         "instance" property must match format "uri"                      components.responses.Forbidden.content.application/problem+json.example.instance
+  433:15    error  oas3-valid-media-example         "instance" property must match format "uri"                      components.responses.NotFound.content
+  442:23    error  oas3-valid-media-example         "instance" property must match format "uri"                      components.responses.NotFound.content.application/problem+json.example.instance
+  447:15    error  oas3-valid-media-example         "instance" property must match format "uri"                      components.responses.Conflict.content
+  456:23    error  oas3-valid-media-example         "instance" property must match format "uri"                      components.responses.Conflict.content.application/problem+json.example.instance
+  461:15    error  oas3-valid-media-example         "instance" property must match format "uri"                      components.responses.PreconditionFailed.content
+  470:23    error  oas3-valid-media-example         "instance" property must match format "uri"                      components.responses.PreconditionFailed.content.application/problem+json.example.instance
+  486:15    error  oas3-valid-media-example         "instance" property must match format "uri"                      components.responses.TooManyRequests.content
+  495:23    error  oas3-valid-media-example         "instance" property must match format "uri"                      components.responses.TooManyRequests.content.application/problem+json.example.instance
+  500:15    error  oas3-valid-media-example         "instance" property must match format "uri"                      components.responses.InternalServerError.content
+  509:23    error  oas3-valid-media-example         "instance" property must match format "uri"                      components.responses.InternalServerError.content.application/problem+json.example.instance
+  546:20    error  oas3-valid-schema-example        "example" property must match format "uri"                       components.schemas.ProblemDetails.properties.instance.example
+  607:24    error  oas3-valid-schema-example        "example" property must match format "uri"                       components.schemas.PaginatedResponse.properties.links.properties.self.example
+  611:24    error  oas3-valid-schema-example        "example" property must match format "uri"                       components.schemas.PaginatedResponse.properties.links.properties.next.example
+  683:15  warning  oas3-unused-component            Potentially unused component has been detected.                  components.schemas.DateRange
+ 1620:22  warning  oas3-unused-component            Potentially unused component has been detected.                  components.schemas.HousekeepingTask
+ 1659:24  warning  oas3-unused-component            Potentially unused component has been detected.                  components.schemas.MaintenanceRequest
+ 1694:20  warning  oas3-unused-component            Potentially unused component has been detected.                  components.schemas.ServiceRequest
+ 1729:11  warning  oas3-unused-component            Potentially unused component has been detected.                  components.schemas.Folio
+ 1765:13  warning  oas3-unused-component            Potentially unused component has been detected.                  components.schemas.Payment
+ 1879:25    error  oas3-valid-media-example         "self" property must match format "uri"                          paths./properties.get.responses[200].content.application/json.example.links.self
+ 2064:21    error  oas3-valid-media-example         "example" property must have required property "classification"  paths./properties/{propertyId}.patch.requestBody.content.application/json.example
+ 2180:21    error  oas3-valid-media-example         "example" property must have required property "propertyId"      paths./properties/{propertyId}/inventory-units.post.requestBody.content.application/json.example
+  2651:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./reservations/{reservationId}.get
+ 2757:21    error  oas3-valid-media-example         "example" property must have required property "propertyId"      paths./reservations/{reservationId}.patch.requestBody.content.application/json.example
+  3108:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./guests/{guestId}.get
+ 3214:21    error  oas3-valid-media-example         "example" property must have required property "firstName"       paths./guests/{guestId}.patch.requestBody.content.application/json.example
+  3237:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./guests/{guestId}/preferences.put
+  3642:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./housekeeping/tasks/{taskId}.put
+ 3644:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./housekeeping/tasks/{taskId}.put.tags[0]
+ 3682:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./housekeeping/tasks/{taskId}.patch.tags[0]
+  3735:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./maintenance/requests/{requestId}.put
+ 3737:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./maintenance/requests/{requestId}.put.tags[0]
+ 3775:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./maintenance/requests/{requestId}.patch.tags[0]
+  3828:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./service-requests/{requestId}.put
+ 3830:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./service-requests/{requestId}.put.tags[0]
+ 3868:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./service-requests/{requestId}.patch.tags[0]
+  3917:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./housekeeping/tasks.get
+ 3919:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./housekeeping/tasks.get.tags[0]
+ 3959:10  warning  operation-description            Operation "description" must be present and non-empty string.    paths./housekeeping/tasks.post
+ 3961:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./housekeeping/tasks.post.tags[0]
+  3989:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./maintenance/requests.get
+ 3991:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./maintenance/requests.get.tags[0]
+ 4030:10  warning  operation-description            Operation "description" must be present and non-empty string.    paths./maintenance/requests.post
+ 4032:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./maintenance/requests.post.tags[0]
+  4060:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./service-requests.get
+ 4062:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./service-requests.get.tags[0]
+ 4096:10  warning  operation-description            Operation "description" must be present and non-empty string.    paths./service-requests.post
+ 4098:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./service-requests.post.tags[0]
+  4130:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./channels/{channelId}.put
+ 4136:20  warning  oas3-operation-security-defined  "write:channels" must be listed among scopes.                    paths./channels/{channelId}.put.security[0].OAuth2[0]
+ 4182:20  warning  oas3-operation-security-defined  "write:channels" must be listed among scopes.                    paths./channels/{channelId}.patch.security[0].OAuth2[0]
+  4220:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./channels.get
+ 4226:20  warning  oas3-operation-security-defined  "read:channels" must be listed among scopes.                     paths./channels.get.security[0].OAuth2[0]
+ 4256:10  warning  operation-description            Operation "description" must be present and non-empty string.    paths./channels.post
+ 4262:20  warning  oas3-operation-security-defined  "write:channels" must be listed among scopes.                    paths./channels.post.security[0].OAuth2[0]
+  4290:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./fb/orders.get
+ 4292:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./fb/orders.get.tags[0]
+ 4296:20  warning  oas3-operation-security-defined  "read:fb" must be listed among scopes.                           paths./fb/orders.get.security[0].OAuth2[0]
+ 4326:10  warning  operation-description            Operation "description" must be present and non-empty string.    paths./fb/orders.post
+ 4328:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./fb/orders.post.tags[0]
+ 4332:20  warning  oas3-operation-security-defined  "write:fb" must be listed among scopes.                          paths./fb/orders.post.security[0].OAuth2[0]
+  4356:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./fb/orders/{orderId}.put
+ 4358:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./fb/orders/{orderId}.put.tags[0]
+ 4362:20  warning  oas3-operation-security-defined  "write:fb" must be listed among scopes.                          paths./fb/orders/{orderId}.put.security[0].OAuth2[0]
+ 4396:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./fb/orders/{orderId}.patch.tags[0]
+ 4408:20  warning  oas3-operation-security-defined  "write:fb" must be listed among scopes.                          paths./fb/orders/{orderId}.patch.security[0].OAuth2[0]
+  4445:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./fb/menu/{itemId}.put
+ 4447:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./fb/menu/{itemId}.put.tags[0]
+ 4451:20  warning  oas3-operation-security-defined  "write:fb" must be listed among scopes.                          paths./fb/menu/{itemId}.put.security[0].OAuth2[0]
+ 4485:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./fb/menu/{itemId}.patch.tags[0]
+ 4497:20  warning  oas3-operation-security-defined  "write:fb" must be listed among scopes.                          paths./fb/menu/{itemId}.patch.security[0].OAuth2[0]
+  4539:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./folios.get
+ 4541:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./folios.get.tags[0]
+ 4545:20  warning  oas3-operation-security-defined  "read:billing" must be listed among scopes.                      paths./folios.get.security[0].OAuth2[0]
+ 4581:10  warning  operation-description            Operation "description" must be present and non-empty string.    paths./folios.post
+ 4583:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./folios.post.tags[0]
+ 4587:20  warning  oas3-operation-security-defined  "write:billing" must be listed among scopes.                     paths./folios.post.security[0].OAuth2[0]
+  4611:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./folios/{folioId}.get
+ 4613:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./folios/{folioId}.get.tags[0]
+ 4617:20  warning  oas3-operation-security-defined  "read:billing" must be listed among scopes.                      paths./folios/{folioId}.get.security[0].OAuth2[0]
+ 4638:10  warning  operation-description            Operation "description" must be present and non-empty string.    paths./folios/{folioId}/charges.post
+ 4640:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./folios/{folioId}/charges.post.tags[0]
+ 4644:20  warning  oas3-operation-security-defined  "write:billing" must be listed among scopes.                     paths./folios/{folioId}/charges.post.security[0].OAuth2[0]
+ 4683:10  warning  operation-description            Operation "description" must be present and non-empty string.    paths./payments.post
+ 4685:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./payments.post.tags[0]
+ 4689:20  warning  oas3-operation-security-defined  "write:billing" must be listed among scopes.                     paths./payments.post.security[0].OAuth2[0]
+  4726:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./payments/{paymentId}.get
+ 4728:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./payments/{paymentId}.get.tags[0]
+ 4732:20  warning  oas3-operation-security-defined  "read:billing" must be listed among scopes.                      paths./payments/{paymentId}.get.security[0].OAuth2[0]
+  4757:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./procurement/purchase-orders.get
+ 4759:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./procurement/purchase-orders.get.tags[0]
+ 4763:20  warning  oas3-operation-security-defined  "read:procurement" must be listed among scopes.                  paths./procurement/purchase-orders.get.security[0].OAuth2[0]
+ 4793:10  warning  operation-description            Operation "description" must be present and non-empty string.    paths./procurement/purchase-orders.post
+ 4795:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./procurement/purchase-orders.post.tags[0]
+ 4799:20  warning  oas3-operation-security-defined  "write:procurement" must be listed among scopes.                 paths./procurement/purchase-orders.post.security[0].OAuth2[0]
+  4823:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./procurement/purchase-orders/{poId}.put
+ 4825:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./procurement/purchase-orders/{poId}.put.tags[0]
+ 4829:20  warning  oas3-operation-security-defined  "write:procurement" must be listed among scopes.                 paths./procurement/purchase-orders/{poId}.put.security[0].OAuth2[0]
+ 4863:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./procurement/purchase-orders/{poId}.patch.tags[0]
+ 4875:20  warning  oas3-operation-security-defined  "write:procurement" must be listed among scopes.                 paths./procurement/purchase-orders/{poId}.patch.security[0].OAuth2[0]
+  4912:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./procurement/suppliers/{supplierId}.put
+ 4914:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./procurement/suppliers/{supplierId}.put.tags[0]
+ 4918:20  warning  oas3-operation-security-defined  "write:procurement" must be listed among scopes.                 paths./procurement/suppliers/{supplierId}.put.security[0].OAuth2[0]
+ 4952:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./procurement/suppliers/{supplierId}.patch.tags[0]
+ 4964:20  warning  oas3-operation-security-defined  "write:procurement" must be listed among scopes.                 paths./procurement/suppliers/{supplierId}.patch.security[0].OAuth2[0]
+  5001:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./procurement/suppliers.get
+ 5003:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./procurement/suppliers.get.tags[0]
+ 5007:20  warning  oas3-operation-security-defined  "read:procurement" must be listed among scopes.                  paths./procurement/suppliers.get.security[0].OAuth2[0]
+ 5033:10  warning  operation-description            Operation "description" must be present and non-empty string.    paths./procurement/suppliers.post
+ 5035:11  warning  operation-tag-defined            Operation tags must be defined in global tags.                   paths./procurement/suppliers.post.tags[0]
+ 5039:20  warning  oas3-operation-security-defined  "write:procurement" must be listed among scopes.                 paths./procurement/suppliers.post.security[0].OAuth2[0]
+  5067:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./inventory-units/{unitId}.put
+  5159:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./rate-strategies/{strategyId}.put
+ 5226:21    error  oas3-valid-media-example         "example" property must have required property "propertyId"      paths./rate-strategies/{strategyId}.patch.requestBody.content.application/json.example
+  5253:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./webhooks/{webhookId}.put
+ 5259:20  warning  oas3-operation-security-defined  "write:webhooks" must be listed among scopes.                    paths./webhooks/{webhookId}.put.security[0].OAuth2[0]
+ 5305:20  warning  oas3-operation-security-defined  "write:webhooks" must be listed among scopes.                    paths./webhooks/{webhookId}.patch.security[0].OAuth2[0]
+  5344:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./webhooks.get
+ 5350:20  warning  oas3-operation-security-defined  "read:webhooks" must be listed among scopes.                     paths./webhooks.get.security[0].OAuth2[0]
+ 5375:10  warning  operation-description            Operation "description" must be present and non-empty string.    paths./webhooks.post
+ 5381:20  warning  oas3-operation-security-defined  "write:webhooks" must be listed among scopes.                    paths./webhooks.post.security[0].OAuth2[0]
+ 5426:20  warning  oas3-operation-security-defined  "write:webhooks" must be listed among scopes.                    paths./webhooks/{webhookId}/test.post.security[0].OAuth2[0]
+  5530:9  warning  operation-description            Operation "description" must be present and non-empty string.    paths./compliance/reports.get
+ 5536:20  warning  oas3-operation-security-defined  "read:compliance" must be listed among scopes.                   paths./compliance/reports.get.security[0].OAuth2[0]
+ 5561:10  warning  operation-description            Operation "description" must be present and non-empty string.    paths./compliance/reports.post
+ 5649:20  warning  oas3-operation-security-defined  "read:system" must be listed among scopes.                       paths./system/metrics.get.security[0].OAuth2[0]
+
+✖ 136 problems (25 errors, 111 warnings, 0 infos, 0 hints)

@@ -1,0 +1,195 @@
+PurchaseOrder:
+  type: object
+  description: Purchase order
+  required:
+    - poId
+    - propertyId
+    - supplierId
+    - status
+  properties:
+    poId:
+      type: string
+      format: uuid
+      readOnly: true
+    poNumber:
+      type: string
+      description: Human-readable PO number
+      example: PO-2025-001234
+      readOnly: true
+    propertyId:
+      type: string
+      format: uuid
+    supplierId:
+      type: string
+      format: uuid
+    status:
+      type: string
+      enum:
+        - DRAFT
+        - PENDING_APPROVAL
+        - APPROVED
+        - SUBMITTED
+        - PARTIALLY_RECEIVED
+        - RECEIVED
+        - INVOICED
+        - PAID
+        - CANCELLED
+      example: DRAFT
+    items:
+      type: array
+      items:
+        type: object
+        properties:
+          itemId:
+            type: string
+            format: uuid
+          description:
+            type: string
+          quantity:
+            type: number
+            format: float
+          unit:
+            type: string
+          unitPrice:
+            $ref: 'common.yaml#/Money'
+          totalPrice:
+            $ref: 'common.yaml#/Money'
+          receivedQuantity:
+            type: number
+            format: float
+            default: 0
+    subtotal:
+      allOf:
+        - $ref: 'common.yaml#/Money'
+        - readOnly: true
+    tax:
+      allOf:
+        - $ref: 'common.yaml#/Money'
+        - readOnly: true
+    total:
+      allOf:
+        - $ref: 'common.yaml#/Money'
+        - readOnly: true
+    deliveryAddress:
+      $ref: 'common.yaml#/Address'
+    requestedDeliveryDate:
+      type: string
+      format: date
+    actualDeliveryDate:
+      type: string
+      format: date
+    approvedBy:
+      type: string
+      format: uuid
+    approvedAt:
+      type: string
+      format: date-time
+    submittedAt:
+      type: string
+      format: date-time
+    notes:
+      type: string
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+
+Supplier:
+  type: object
+  description: Supplier/vendor
+  required:
+    - supplierId
+    - name
+    - category
+    - status
+  properties:
+    supplierId:
+      type: string
+      format: uuid
+      readOnly: true
+    name:
+      type: string
+      example: ABC Food Distributors
+    category:
+      type: string
+      enum:
+        - FOOD_BEVERAGE
+        - LINEN
+        - CLEANING_SUPPLIES
+        - MAINTENANCE
+        - FURNITURE
+        - TECHNOLOGY
+        - UTILITIES
+        - OTHER
+      example: FOOD_BEVERAGE
+    status:
+      type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
+        - SUSPENDED
+      example: ACTIVE
+    contactInfo:
+      $ref: 'common.yaml#/ContactInfo'
+    address:
+      $ref: 'common.yaml#/Address'
+    paymentTerms:
+      type: string
+      example: Net 30
+    taxId:
+      type: string
+      description: Tax identification number
+    bankDetails:
+      type: object
+      properties:
+        accountName:
+          type: string
+        accountNumber:
+          type: string
+        routingNumber:
+          type: string
+        bankName:
+          type: string
+    rating:
+      type: number
+      format: float
+      minimum: 1
+      maximum: 5
+      description: Supplier performance rating
+    notes:
+      type: string
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+
+SupplierPerformance:
+  type: object
+  description: Supplier performance metrics
+  required:
+    - supplierId
+    - startDate
+    - endDate
+  properties:
+    supplierId:
+      type: string
+      format: uuid
+    startDate:
+      type: string
+      format: date
+    endDate:
+      type: string
+      format: date
+    totalOrders:
+      type: integer
+    totalSpend:
+      $ref: 'common.yaml#/Money'
+    onTimeDeliveryRate:
+      type: number
+      format: float
+      description: Percentage
+    qualityRating:
+      type: number
+      format: float
+      minimum: 1
+      maximum: 5
+    averageLeadTime:
+      type: integer
+      description: Average lead time in days
+

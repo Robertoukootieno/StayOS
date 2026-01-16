@@ -1,0 +1,69 @@
+Reservation:
+  type: object
+  description: Guest reservation
+  required:
+  - reservationId
+  - propertyId
+  - guestId
+  - checkInDate
+  - checkOutDate
+  - status
+  properties:
+    reservationId:
+      type: string
+      format: uuid
+      readOnly: true
+    propertyId:
+      type: string
+      format: uuid
+    guestId:
+      type: string
+      format: uuid
+    checkInDate:
+      type: string
+      format: date
+      example: '2025-12-25'
+    checkOutDate:
+      type: string
+      format: date
+      example: '2025-12-28'
+    status:
+      type: string
+      enum:
+      - PENDING
+      - CONFIRMED
+      - CHECKED_IN
+      - CHECKED_OUT
+      - CANCELLED
+      - NO_SHOW
+      example: CONFIRMED
+    guestCount:
+      type: object
+      properties:
+        adults:
+          type: integer
+          minimum: 1
+          example: 2
+        children:
+          type: integer
+          minimum: 0
+          example: 1
+    specialRequests:
+      type: string
+      example: Late check-in at 10 PM
+    totalAmount:
+      $ref: 'common.yaml#/Money'
+    cancellationPolicy:
+      $ref: 'property.yaml#/CancellationPolicy'
+    createdAt:
+      type: string
+      format: date-time
+      readOnly: true
+    updatedAt:
+      type: string
+      format: date-time
+      readOnly: true
+    version:
+      type: integer
+      readOnly: true
+      description: Version for optimistic locking

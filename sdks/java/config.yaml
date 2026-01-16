@@ -1,0 +1,11 @@
+groupId: "com.stayos"
+artifactId: "stayos-api-client"
+artifactVersion: "4.0.0"
+apiPackage: "com.stayos.api"
+modelPackage: "com.stayos.model"
+invokerPackage: "com.stayos.client"
+library: "okhttp-gson"
+dateLibrary: "java8"
+java8: true
+useRxJava2: false
+

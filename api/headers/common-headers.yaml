@@ -1,0 +1,31 @@
+ETag:
+  description: Entity tag for caching and optimistic locking
+  schema:
+    type: string
+
+Location:
+  description: URL of newly created resource
+  schema:
+    type: string
+    format: uri
+
+X-RateLimit-Limit:
+  description: Request limit per time window
+  schema:
+    type: integer
+
+X-RateLimit-Remaining:
+  description: Remaining requests in current window
+  schema:
+    type: integer
+
+X-RateLimit-Reset:
+  description: Unix timestamp when rate limit resets
+  schema:
+    type: integer
+
+X-Request-Id:
+  description: Unique request identifier for tracing
+  schema:
+    type: string
+    format: uuid
