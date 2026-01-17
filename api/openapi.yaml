@@ -65,6 +65,16 @@ tags:
   description: Staff scheduling and shift management
 - name: Food & Beverage
   description: F&B orders, menu management, and dining services
+- name: Venues
+  description: Restaurant, bar, and cafe venue management
+- name: Tables
+  description: Table and seating management for venues
+- name: Floor Sections
+  description: Floor section and area management for venues
+- name: Table Reservations
+  description: Table reservation lifecycle management
+- name: Waitlist
+  description: Waitlist management for walk-in guests
 - name: Billing
   description: Billing, folios, and charge management
 - name: Folios
@@ -112,6 +122,10 @@ components:
             write:channels: Manage channel connections
             read:fb: View food & beverage orders
             write:fb: Manage F&B operations
+            read:venues: View venue information
+            write:venues: Create and update venues
+            read:tables: View tables and floor sections
+            write:tables: Manage tables and floor sections
             read:billing: View billing and folios
             write:billing: Manage billing operations
             read:procurement: View purchase orders and suppliers
@@ -198,6 +212,8 @@ components:
       $ref: ./responses/common-responses.yaml#/Conflict
     PreconditionFailed:
       $ref: ./responses/common-responses.yaml#/PreconditionFailed
+    UnprocessableEntity:
+      $ref: ./responses/common-responses.yaml#/UnprocessableEntity
     TooManyRequests:
       $ref: ./responses/common-responses.yaml#/TooManyRequests
     InternalServerError:
@@ -350,6 +366,84 @@ components:
     FBInventoryItem:
       allOf:
         - $ref: ./schemas/fb.yaml#/FBInventoryItem
+    Venue:
+      allOf:
+        - $ref: ./schemas/venues.yaml#/Venue
+    VenueCreateRequest:
+      allOf:
+        - $ref: ./schemas/venues.yaml#/VenueCreateRequest
+    VenueUpdateRequest:
+      allOf:
+        - $ref: ./schemas/venues.yaml#/VenueUpdateRequest
+    VenueListResponse:
+      allOf:
+        - $ref: ./schemas/venues.yaml#/VenueListResponse
+    FloorSection:
+      allOf:
+        - $ref: ./schemas/tables.yaml#/FloorSection
+    FloorSectionCreateRequest:
+      allOf:
+        - $ref: ./schemas/tables.yaml#/FloorSectionCreateRequest
+    FloorSectionUpdateRequest:
+      allOf:
+        - $ref: ./schemas/tables.yaml#/FloorSectionUpdateRequest
+    FloorSectionListResponse:
+      allOf:
+        - $ref: ./schemas/tables.yaml#/FloorSectionListResponse
+    Table:
+      allOf:
+        - $ref: ./schemas/tables.yaml#/Table
+    TableCreateRequest:
+      allOf:
+        - $ref: ./schemas/tables.yaml#/TableCreateRequest
+    TableUpdateRequest:
+      allOf:
+        - $ref: ./schemas/tables.yaml#/TableUpdateRequest
+    TableListResponse:
+      allOf:
+        - $ref: ./schemas/tables.yaml#/TableListResponse
+    TableAvailability:
+      allOf:
+        - $ref: ./schemas/tables.yaml#/TableAvailability
+    TableAvailabilityResponse:
+      allOf:
+        - $ref: ./schemas/tables.yaml#/TableAvailabilityResponse
+    TableReservation:
+      allOf:
+        - $ref: ./schemas/table-reservations.yaml#/TableReservation
+    TableReservationCreateRequest:
+      allOf:
+        - $ref: ./schemas/table-reservations.yaml#/TableReservationCreateRequest
+    TableReservationUpdateRequest:
+      allOf:
+        - $ref: ./schemas/table-reservations.yaml#/TableReservationUpdateRequest
+    TableReservationListResponse:
+      allOf:
+        - $ref: ./schemas/table-reservations.yaml#/TableReservationListResponse
+    ReservationAvailabilityRequest:
+      allOf:
+        - $ref: ./schemas/table-reservations.yaml#/ReservationAvailabilityRequest
+    ReservationAvailabilityResponse:
+      allOf:
+        - $ref: ./schemas/table-reservations.yaml#/ReservationAvailabilityResponse
+    ReservationConfirmRequest:
+      allOf:
+        - $ref: ./schemas/table-reservations.yaml#/ReservationConfirmRequest
+    ReservationCancelRequest:
+      allOf:
+        - $ref: ./schemas/table-reservations.yaml#/ReservationCancelRequest
+    ReservationSeatingRequest:
+      allOf:
+        - $ref: ./schemas/table-reservations.yaml#/ReservationSeatingRequest
+    Waitlist:
+      allOf:
+        - $ref: ./schemas/table-reservations.yaml#/Waitlist
+    WaitlistCreateRequest:
+      allOf:
+        - $ref: ./schemas/table-reservations.yaml#/WaitlistCreateRequest
+    WaitlistListResponse:
+      allOf:
+        - $ref: ./schemas/table-reservations.yaml#/WaitlistListResponse
     PurchaseOrder:
       allOf:
         - $ref: ./schemas/procurement.yaml#/PurchaseOrder
@@ -5492,6 +5586,163 @@ paths:
                       type: object
         '400':
           $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /venues:
+    get:
+      tags:
+      - Venues
+      summary: List venues
+      description: |
+        Retrieve a paginated list of venues (restaurants, bars, cafes).
+
+        **Authorization:** Requires `read:venues` scope
+
+        **Rate Limit:** 100 requests/minute
+      operationId: listVenues
+      security:
+      - OAuth2:
+        - read:venues
+      - BearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/PageSize'
+      - $ref: '#/components/parameters/PageCursor'
+      - name: venueType
+        in: query
+        description: Filter by venue type
+        schema:
+          type: string
+          enum:
+          - RESTAURANT
+          - BAR
+          - CAFE
+          - BISTRO
+          - PUB
+          - FOOD_TRUCK
+          - NIGHTCLUB
+      - name: venueClassification
+        in: query
+        description: Filter by venue classification
+        schema:
+          type: string
+          enum:
+          - FINE_DINING
+          - CASUAL_DINING
+          - FAST_CASUAL
+          - QUICK_SERVICE
+          - FOOD_COURT
+          - BUFFET
+          - CAFE
+          - BAKERY
+          - BAR
+          - LOUNGE
+          - NIGHTCLUB
+          - FOOD_TRUCK
+      - name: operationalStatus
+        in: query
+        description: Filter by operational status
+        schema:
+          type: string
+          enum:
+          - ACTIVE
+          - SUSPENDED
+          - CLOSED
+          - TEMPORARILY_CLOSED
+      - name: acceptsReservations
+        in: query
+        description: Filter by whether venue accepts reservations
+        schema:
+          type: boolean
+      - name: city
+        in: query
+        description: Filter by city
+        schema:
+          type: string
+      - name: cuisineType
+        in: query
+        description: Filter by cuisine type
+        schema:
+          type: string
+      - $ref: '#/components/parameters/SortBy'
+      - $ref: '#/components/parameters/SortOrder'
+      - $ref: '#/components/parameters/Expand'
+      responses:
+        '200':
+          description: Successful response
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
+            X-Request-Id:
+              $ref: '#/components/headers/X-Request-Id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VenueListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+      - Venues
+      summary: Create venue
+      description: |
+        Create a new venue (restaurant, bar, cafe).
+
+        **Authorization:** Requires `write:venues` scope
+
+        **Rate Limit:** 100 requests/minute
+
+        **Idempotency:** Supports idempotency key
+      operationId: createVenue
+      security:
+      - OAuth2:
+        - write:venues
+      - BearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VenueCreateRequest'
+      responses:
+        '201':
+          description: Venue created successfully
+          headers:
+            Location:
+              $ref: '#/components/headers/Location'
+            ETag:
+              $ref: '#/components/headers/ETag'
+            X-Request-Id:
+              $ref: '#/components/headers/X-Request-Id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Venue'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
         '500':
           $ref: '#/components/responses/InternalServerError'
   /folios:

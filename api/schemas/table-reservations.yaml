@@ -1,0 +1,547 @@
+TableReservation:
+  type: object
+  description: Table reservation for a restaurant or bar
+  required:
+  - guestName
+  - guestPhone
+  - reservationDate
+  - reservationTime
+  - partySize
+  properties:
+    reservationId:
+      type: string
+      format: uuid
+      readOnly: true
+      description: Unique reservation identifier
+      example: r1111111-1111-1111-1111-111111111111
+    venueId:
+      type: string
+      format: uuid
+      description: Venue identifier
+      example: a1111111-1111-1111-1111-111111111111
+    guestId:
+      type: string
+      format: uuid
+      description: Guest profile identifier (if registered guest)
+      example: g1111111-1111-1111-1111-111111111111
+    guestName:
+      type: string
+      minLength: 1
+      maxLength: 255
+      description: Guest name
+      example: John Doe
+    guestEmail:
+      type: string
+      format: email
+      maxLength: 255
+      description: Guest email
+      example: john.doe@example.com
+    guestPhone:
+      type: string
+      minLength: 1
+      maxLength: 50
+      description: Guest phone number
+      example: "+1-415-555-0101"
+    reservationDate:
+      type: string
+      format: date
+      description: Reservation date
+      example: "2026-01-20"
+    reservationTime:
+      type: string
+      format: time
+      description: Reservation time
+      example: "19:00"
+    partySize:
+      type: integer
+      minimum: 1
+      maximum: 50
+      description: Number of guests
+      example: 4
+    tableId:
+      type: string
+      format: uuid
+      description: Assigned table identifier
+      example: t1111111-1111-1111-1111-111111111111
+    preferredSectionId:
+      type: string
+      format: uuid
+      description: Preferred floor section
+      example: f1111111-1111-1111-1111-111111111111
+    status:
+      type: string
+      enum:
+      - PENDING
+      - CONFIRMED
+      - SEATED
+      - COMPLETED
+      - CANCELLED
+      - NO_SHOW
+      description: Reservation status
+      default: PENDING
+    source:
+      type: string
+      enum:
+      - PHONE
+      - WEBSITE
+      - MOBILE_APP
+      - WALK_IN
+      - THIRD_PARTY
+      - EMAIL
+      description: Reservation source
+      example: WEBSITE
+    confirmationCode:
+      type: string
+      maxLength: 20
+      readOnly: true
+      description: Unique confirmation code
+      example: ABC123XYZ
+    specialRequests:
+      type: string
+      maxLength: 1000
+      description: Special requests or notes
+      example: Window table preferred, celebrating anniversary
+    occasion:
+      type: string
+      maxLength: 100
+      description: Special occasion
+      example: Anniversary
+    dietaryRestrictions:
+      type: array
+      items:
+        type: string
+      description: Dietary restrictions
+      example:
+      - Vegetarian
+      - Gluten-free
+    depositAmount:
+      type: number
+      format: float
+      minimum: 0
+      description: Deposit amount required
+      example: 50.00
+    depositPaid:
+      type: boolean
+      default: false
+      description: Whether deposit has been paid
+    estimatedDuration:
+      type: integer
+      minimum: 15
+      description: Estimated duration in minutes
+      example: 120
+    seatedAt:
+      type: string
+      format: date-time
+      readOnly: true
+      description: Time when party was seated
+    completedAt:
+      type: string
+      format: date-time
+      readOnly: true
+      description: Time when reservation was completed
+    cancelledAt:
+      type: string
+      format: date-time
+      readOnly: true
+      description: Time when reservation was cancelled
+    cancellationReason:
+      type: string
+      maxLength: 500
+      description: Reason for cancellation
+    reminderSent:
+      type: boolean
+      default: false
+      readOnly: true
+      description: Whether reminder has been sent
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+    links:
+      type: object
+      readOnly: true
+      description: HATEOAS links
+      properties:
+        self:
+          type: string
+          format: uri
+        venue:
+          type: string
+          format: uri
+        table:
+          type: string
+          format: uri
+        guest:
+          type: string
+          format: uri
+        confirm:
+          type: string
+          format: uri
+        cancel:
+          type: string
+          format: uri
+
+Waitlist:
+  type: object
+  description: Waitlist entry for walk-in guests
+  required:
+  - guestName
+  - guestPhone
+  - partySize
+  properties:
+    waitlistId:
+      type: string
+      format: uuid
+      readOnly: true
+      description: Unique waitlist entry identifier
+      example: w1111111-1111-1111-1111-111111111111
+    venueId:
+      type: string
+      format: uuid
+      description: Venue identifier
+      example: a1111111-1111-1111-1111-111111111111
+    guestName:
+      type: string
+      minLength: 1
+      maxLength: 255
+      description: Guest name
+      example: Jane Smith
+    guestPhone:
+      type: string
+      minLength: 1
+      maxLength: 50
+      description: Guest phone number
+      example: "+1-415-555-0102"
+    partySize:
+      type: integer
+      minimum: 1
+      maximum: 50
+      description: Number of guests
+      example: 2
+    preferredSectionId:
+      type: string
+      format: uuid
+      description: Preferred floor section
+    status:
+      type: string
+      enum:
+      - WAITING
+      - NOTIFIED
+      - SEATED
+      - CANCELLED
+      - NO_SHOW
+      description: Waitlist status
+      default: WAITING
+    estimatedWaitTime:
+      type: integer
+      minimum: 0
+      description: Estimated wait time in minutes
+      example: 30
+    notifiedAt:
+      type: string
+      format: date-time
+      readOnly: true
+      description: Time when guest was notified
+    seatedAt:
+      type: string
+      format: date-time
+      readOnly: true
+      description: Time when guest was seated
+    queuePosition:
+      type: integer
+      minimum: 1
+      readOnly: true
+      description: Current position in queue
+      example: 3
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+
+TableReservationCreateRequest:
+  type: object
+  description: Request to create a table reservation
+  required:
+  - guestName
+  - guestPhone
+  - reservationDate
+  - reservationTime
+  - partySize
+  properties:
+    guestId:
+      type: string
+      format: uuid
+      description: Guest profile identifier (if registered guest)
+    guestName:
+      type: string
+      minLength: 1
+      maxLength: 255
+      example: John Doe
+    guestEmail:
+      type: string
+      format: email
+      maxLength: 255
+      example: john.doe@example.com
+    guestPhone:
+      type: string
+      minLength: 1
+      maxLength: 50
+      example: "+1-415-555-0101"
+    reservationDate:
+      type: string
+      format: date
+      example: "2026-01-20"
+    reservationTime:
+      type: string
+      format: time
+      example: "19:00"
+    partySize:
+      type: integer
+      minimum: 1
+      maximum: 50
+      example: 4
+    tableId:
+      type: string
+      format: uuid
+      description: Specific table request (optional)
+    preferredSectionId:
+      type: string
+      format: uuid
+      description: Preferred floor section
+    specialRequests:
+      type: string
+      maxLength: 1000
+      example: Window table preferred
+    occasion:
+      type: string
+      maxLength: 100
+      example: Anniversary
+    dietaryRestrictions:
+      type: array
+      items:
+        type: string
+      example:
+      - Vegetarian
+    depositAmount:
+      type: number
+      format: float
+      minimum: 0
+    estimatedDuration:
+      type: integer
+      minimum: 15
+      example: 120
+    source:
+      type: string
+      enum:
+      - PHONE
+      - WEBSITE
+      - MOBILE_APP
+      - WALK_IN
+      - THIRD_PARTY
+      - EMAIL
+      default: WEBSITE
+
+TableReservationUpdateRequest:
+  type: object
+  description: Request to update a table reservation
+  properties:
+    guestName:
+      type: string
+      minLength: 1
+      maxLength: 255
+    guestEmail:
+      type: string
+      format: email
+      maxLength: 255
+    guestPhone:
+      type: string
+      minLength: 1
+      maxLength: 50
+    reservationDate:
+      type: string
+      format: date
+    reservationTime:
+      type: string
+      format: time
+    partySize:
+      type: integer
+      minimum: 1
+      maximum: 50
+    tableId:
+      type: string
+      format: uuid
+    preferredSectionId:
+      type: string
+      format: uuid
+    specialRequests:
+      type: string
+      maxLength: 1000
+    occasion:
+      type: string
+      maxLength: 100
+    dietaryRestrictions:
+      type: array
+      items:
+        type: string
+    estimatedDuration:
+      type: integer
+      minimum: 15
+
+WaitlistCreateRequest:
+  type: object
+  description: Request to add guest to waitlist
+  required:
+  - guestName
+  - guestPhone
+  - partySize
+  properties:
+    guestName:
+      type: string
+      minLength: 1
+      maxLength: 255
+      example: Jane Smith
+    guestPhone:
+      type: string
+      minLength: 1
+      maxLength: 50
+      example: "+1-415-555-0102"
+    partySize:
+      type: integer
+      minimum: 1
+      maximum: 50
+      example: 2
+    preferredSectionId:
+      type: string
+      format: uuid
+
+TableReservationListResponse:
+  allOf:
+  - $ref: 'common.yaml#/PaginatedResponse'
+  - type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/TableReservation'
+
+WaitlistListResponse:
+  allOf:
+  - $ref: 'common.yaml#/PaginatedResponse'
+  - type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/Waitlist'
+
+ReservationAvailabilityRequest:
+  type: object
+  description: Request to check reservation availability
+  required:
+  - date
+  - time
+  - partySize
+  properties:
+    date:
+      type: string
+      format: date
+      example: "2026-01-20"
+    time:
+      type: string
+      format: time
+      example: "19:00"
+    partySize:
+      type: integer
+      minimum: 1
+      maximum: 50
+      example: 4
+    preferredSectionId:
+      type: string
+      format: uuid
+    duration:
+      type: integer
+      minimum: 15
+      description: Expected duration in minutes
+      example: 120
+
+ReservationAvailabilityResponse:
+  type: object
+  description: Reservation availability response
+  properties:
+    isAvailable:
+      type: boolean
+      description: Whether reservation is available
+    availableTimeSlots:
+      type: array
+      description: Alternative available time slots
+      items:
+        type: object
+        properties:
+          time:
+            type: string
+            format: time
+          availableTables:
+            type: integer
+          totalCapacity:
+            type: integer
+    suggestedTables:
+      type: array
+      description: Suggested tables for the requested time
+      items:
+        type: object
+        properties:
+          tableId:
+            type: string
+            format: uuid
+          tableNumber:
+            type: string
+          sectionName:
+            type: string
+          capacity:
+            type: integer
+    estimatedWaitTime:
+      type: integer
+      description: Estimated wait time if no tables available (minutes)
+      example: 30
+
+ReservationConfirmRequest:
+  type: object
+  description: Request to confirm a reservation
+  properties:
+    tableId:
+      type: string
+      format: uuid
+      description: Assign specific table
+    depositPaid:
+      type: boolean
+      description: Mark deposit as paid
+    notes:
+      type: string
+      maxLength: 500
+      description: Confirmation notes
+
+ReservationCancelRequest:
+  type: object
+  description: Request to cancel a reservation
+  properties:
+    cancellationReason:
+      type: string
+      maxLength: 500
+      description: Reason for cancellation
+      example: Guest requested cancellation
+
+ReservationSeatingRequest:
+  type: object
+  description: Request to mark reservation as seated
+  required:
+  - tableId
+  properties:
+    tableId:
+      type: string
+      format: uuid
+      description: Table where party is seated
+    actualPartySize:
+      type: integer
+      minimum: 1
+      description: Actual party size (may differ from reservation)
+    notes:
+      type: string
+      maxLength: 500
+      description: Seating notes
+

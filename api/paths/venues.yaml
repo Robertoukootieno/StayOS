@@ -1,0 +1,303 @@
+/venues:
+  get:
+    tags:
+    - Venues
+    summary: List venues
+    description: |
+      Retrieve a paginated list of venues (restaurants, bars, cafes).
+      
+      **Authorization:** Requires `read:venues` scope
+      
+      **Rate Limit:** 100 requests/minute
+    operationId: listVenues
+    security:
+    - OAuth2:
+      - read:venues
+    - BearerAuth: []
+    parameters:
+    - $ref: '../openapi.yaml#/components/parameters/PageSize'
+    - $ref: '../openapi.yaml#/components/parameters/PageCursor'
+    - name: venueType
+      in: query
+      description: Filter by venue type
+      schema:
+        type: string
+        enum:
+        - RESTAURANT
+        - BAR
+        - CAFE
+        - BISTRO
+        - PUB
+        - FOOD_TRUCK
+        - NIGHTCLUB
+    - name: venueClassification
+      in: query
+      description: Filter by venue classification
+      schema:
+        type: string
+        enum:
+        - FINE_DINING
+        - CASUAL_DINING
+        - FAST_CASUAL
+        - QUICK_SERVICE
+        - FOOD_COURT
+        - BUFFET
+        - CAFE
+        - BAKERY
+        - BAR
+        - LOUNGE
+        - NIGHTCLUB
+        - FOOD_TRUCK
+    - name: operationalStatus
+      in: query
+      description: Filter by operational status
+      schema:
+        type: string
+        enum:
+        - ACTIVE
+        - SUSPENDED
+        - CLOSED
+        - TEMPORARILY_CLOSED
+    - name: acceptsReservations
+      in: query
+      description: Filter by whether venue accepts reservations
+      schema:
+        type: boolean
+    - name: city
+      in: query
+      description: Filter by city
+      schema:
+        type: string
+    - name: cuisineType
+      in: query
+      description: Filter by cuisine type
+      schema:
+        type: string
+    - $ref: '../openapi.yaml#/components/parameters/SortBy'
+    - $ref: '../openapi.yaml#/components/parameters/SortOrder'
+    - $ref: '../openapi.yaml#/components/parameters/Expand'
+    responses:
+      '200':
+        description: Successful response
+        headers:
+          X-RateLimit-Limit:
+            $ref: '../openapi.yaml#/components/headers/X-RateLimit-Limit'
+          X-RateLimit-Remaining:
+            $ref: '../openapi.yaml#/components/headers/X-RateLimit-Remaining'
+          X-RateLimit-Reset:
+            $ref: '../openapi.yaml#/components/headers/X-RateLimit-Reset'
+          X-Request-Id:
+            $ref: '../openapi.yaml#/components/headers/X-Request-Id'
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/venues.yaml#/VenueListResponse'
+      '400':
+        $ref: '../openapi.yaml#/components/responses/BadRequest'
+      '401':
+        $ref: '../openapi.yaml#/components/responses/Unauthorized'
+      '403':
+        $ref: '../openapi.yaml#/components/responses/Forbidden'
+      '429':
+        $ref: '../openapi.yaml#/components/responses/TooManyRequests'
+      '500':
+        $ref: '../openapi.yaml#/components/responses/InternalServerError'
+  post:
+    tags:
+    - Venues
+    summary: Create venue
+    description: |
+      Create a new venue (restaurant, bar, cafe).
+      
+      **Authorization:** Requires `write:venues` scope
+      
+      **Rate Limit:** 100 requests/minute
+      
+      **Idempotency:** Supports idempotency key
+    operationId: createVenue
+    security:
+    - OAuth2:
+      - write:venues
+    - BearerAuth: []
+    parameters:
+    - $ref: '../openapi.yaml#/components/parameters/IdempotencyKey'
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/venues.yaml#/VenueCreateRequest'
+    responses:
+      '201':
+        description: Venue created successfully
+        headers:
+          Location:
+            $ref: '../openapi.yaml#/components/headers/Location'
+          ETag:
+            $ref: '../openapi.yaml#/components/headers/ETag'
+          X-Request-Id:
+            $ref: '../openapi.yaml#/components/headers/X-Request-Id'
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/venues.yaml#/Venue'
+      '400':
+        $ref: '../openapi.yaml#/components/responses/BadRequest'
+      '401':
+        $ref: '../openapi.yaml#/components/responses/Unauthorized'
+      '403':
+        $ref: '../openapi.yaml#/components/responses/Forbidden'
+      '409':
+        $ref: '../openapi.yaml#/components/responses/Conflict'
+      '422':
+        $ref: '../openapi.yaml#/components/responses/UnprocessableEntity'
+      '429':
+        $ref: '../openapi.yaml#/components/responses/TooManyRequests'
+      '500':
+        $ref: '../openapi.yaml#/components/responses/InternalServerError'
+
+/venues/{venueId}:
+  parameters:
+  - name: venueId
+    in: path
+    required: true
+    description: Unique venue identifier
+    schema:
+      type: string
+      format: uuid
+  get:
+    tags:
+    - Venues
+    summary: Get venue
+    description: |
+      Retrieve a specific venue by ID.
+
+      **Authorization:** Requires `read:venues` scope
+
+      **Rate Limit:** 100 requests/minute
+    operationId: getVenue
+    security:
+    - OAuth2:
+      - read:venues
+    - BearerAuth: []
+    parameters:
+    - $ref: '../openapi.yaml#/components/parameters/Expand'
+    - $ref: '../openapi.yaml#/components/parameters/IfNoneMatch'
+    responses:
+      '200':
+        description: Successful response
+        headers:
+          ETag:
+            $ref: '../openapi.yaml#/components/headers/ETag'
+          X-Request-Id:
+            $ref: '../openapi.yaml#/components/headers/X-Request-Id'
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/venues.yaml#/Venue'
+      '304':
+        description: Not Modified (ETag matched)
+      '400':
+        $ref: '../openapi.yaml#/components/responses/BadRequest'
+      '401':
+        $ref: '../openapi.yaml#/components/responses/Unauthorized'
+      '403':
+        $ref: '../openapi.yaml#/components/responses/Forbidden'
+      '404':
+        $ref: '../openapi.yaml#/components/responses/NotFound'
+      '429':
+        $ref: '../openapi.yaml#/components/responses/TooManyRequests'
+      '500':
+        $ref: '../openapi.yaml#/components/responses/InternalServerError'
+  put:
+    tags:
+    - Venues
+    summary: Update venue
+    description: |
+      Update an existing venue.
+
+      **Authorization:** Requires `write:venues` scope
+
+      **Rate Limit:** 100 requests/minute
+
+      **Optimistic Locking:** Supports If-Match header with ETag
+    operationId: updateVenue
+    security:
+    - OAuth2:
+      - write:venues
+    - BearerAuth: []
+    parameters:
+    - $ref: '../openapi.yaml#/components/parameters/IfMatch'
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/venues.yaml#/VenueUpdateRequest'
+    responses:
+      '200':
+        description: Venue updated successfully
+        headers:
+          ETag:
+            $ref: '../openapi.yaml#/components/headers/ETag'
+          X-Request-Id:
+            $ref: '../openapi.yaml#/components/headers/X-Request-Id'
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/venues.yaml#/Venue'
+      '400':
+        $ref: '../openapi.yaml#/components/responses/BadRequest'
+      '401':
+        $ref: '../openapi.yaml#/components/responses/Unauthorized'
+      '403':
+        $ref: '../openapi.yaml#/components/responses/Forbidden'
+      '404':
+        $ref: '../openapi.yaml#/components/responses/NotFound'
+      '409':
+        $ref: '../openapi.yaml#/components/responses/Conflict'
+      '412':
+        $ref: '../openapi.yaml#/components/responses/PreconditionFailed'
+      '422':
+        $ref: '../openapi.yaml#/components/responses/UnprocessableEntity'
+      '429':
+        $ref: '../openapi.yaml#/components/responses/TooManyRequests'
+      '500':
+        $ref: '../openapi.yaml#/components/responses/InternalServerError'
+  delete:
+    tags:
+    - Venues
+    summary: Delete venue
+    description: |
+      Delete a venue (soft delete).
+
+      **Authorization:** Requires `write:venues` scope
+
+      **Rate Limit:** 100 requests/minute
+    operationId: deleteVenue
+    security:
+    - OAuth2:
+      - write:venues
+    - BearerAuth: []
+    parameters:
+    - $ref: '../openapi.yaml#/components/parameters/IfMatch'
+    responses:
+      '204':
+        $ref: '../openapi.yaml#/components/responses/NoContent'
+      '400':
+        $ref: '../openapi.yaml#/components/responses/BadRequest'
+      '401':
+        $ref: '../openapi.yaml#/components/responses/Unauthorized'
+      '403':
+        $ref: '../openapi.yaml#/components/responses/Forbidden'
+      '404':
+        $ref: '../openapi.yaml#/components/responses/NotFound'
+      '409':
+        $ref: '../openapi.yaml#/components/responses/Conflict'
+      '412':
+        $ref: '../openapi.yaml#/components/responses/PreconditionFailed'
+      '429':
+        $ref: '../openapi.yaml#/components/responses/TooManyRequests'
+      '500':
+        $ref: '../openapi.yaml#/components/responses/InternalServerError'
+

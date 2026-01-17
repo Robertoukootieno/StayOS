@@ -85,6 +85,19 @@ PreconditionFailed:
         detail: Resource has been modified by another request
         instance: https://api.stayos.com/v1/reservations/123
         traceId: 550e8400-e29b-41d4-a716-446655440000
+UnprocessableEntity:
+  description: Unprocessable entity - semantic validation error
+  content:
+    application/problem+json:
+      schema:
+        $ref: '../schemas/common.yaml#/ProblemDetails'
+      example:
+        type: https://api.stayos.com/errors/unprocessable-entity
+        title: Unprocessable Entity
+        status: 422
+        detail: The request was well-formed but contains semantic errors
+        instance: https://api.stayos.com/v1/reservations
+        traceId: 550e8400-e29b-41d4-a716-446655440000
 TooManyRequests:
   description: Too many requests - rate limit exceeded
   headers:

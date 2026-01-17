@@ -1,0 +1,372 @@
+/venues/{venueId}/reservations/{reservationId}/confirm:
+  parameters:
+  - name: venueId
+    in: path
+    required: true
+    description: Unique venue identifier
+    schema:
+      type: string
+      format: uuid
+  - name: reservationId
+    in: path
+    required: true
+    description: Unique reservation identifier
+    schema:
+      type: string
+      format: uuid
+  post:
+    tags:
+    - Table Reservations
+    summary: Confirm reservation
+    description: |
+      Confirm a pending table reservation.
+      
+      **Authorization:** Requires `write:reservations` scope
+      
+      **Rate Limit:** 100 requests/minute
+    operationId: confirmTableReservation
+    security:
+    - OAuth2:
+      - write:reservations
+    - BearerAuth: []
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/table-reservations.yaml#/ReservationConfirmRequest'
+    responses:
+      '200':
+        description: Reservation confirmed successfully
+        headers:
+          ETag:
+            $ref: '../openapi.yaml#/components/headers/ETag'
+          X-Request-Id:
+            $ref: '../openapi.yaml#/components/headers/X-Request-Id'
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/table-reservations.yaml#/TableReservation'
+      '400':
+        $ref: '../openapi.yaml#/components/responses/BadRequest'
+      '401':
+        $ref: '../openapi.yaml#/components/responses/Unauthorized'
+      '403':
+        $ref: '../openapi.yaml#/components/responses/Forbidden'
+      '404':
+        $ref: '../openapi.yaml#/components/responses/NotFound'
+      '409':
+        $ref: '../openapi.yaml#/components/responses/Conflict'
+      '422':
+        $ref: '../openapi.yaml#/components/responses/UnprocessableEntity'
+      '429':
+        $ref: '../openapi.yaml#/components/responses/TooManyRequests'
+      '500':
+        $ref: '../openapi.yaml#/components/responses/InternalServerError'
+
+/venues/{venueId}/reservations/{reservationId}/cancel:
+  parameters:
+  - name: venueId
+    in: path
+    required: true
+    description: Unique venue identifier
+    schema:
+      type: string
+      format: uuid
+  - name: reservationId
+    in: path
+    required: true
+    description: Unique reservation identifier
+    schema:
+      type: string
+      format: uuid
+  post:
+    tags:
+    - Table Reservations
+    summary: Cancel reservation
+    description: |
+      Cancel a table reservation.
+      
+      **Authorization:** Requires `write:reservations` scope
+      
+      **Rate Limit:** 100 requests/minute
+    operationId: cancelTableReservation
+    security:
+    - OAuth2:
+      - write:reservations
+    - BearerAuth: []
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/table-reservations.yaml#/ReservationCancelRequest'
+    responses:
+      '200':
+        description: Reservation cancelled successfully
+        headers:
+          ETag:
+            $ref: '../openapi.yaml#/components/headers/ETag'
+          X-Request-Id:
+            $ref: '../openapi.yaml#/components/headers/X-Request-Id'
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/table-reservations.yaml#/TableReservation'
+      '400':
+        $ref: '../openapi.yaml#/components/responses/BadRequest'
+      '401':
+        $ref: '../openapi.yaml#/components/responses/Unauthorized'
+      '403':
+        $ref: '../openapi.yaml#/components/responses/Forbidden'
+      '404':
+        $ref: '../openapi.yaml#/components/responses/NotFound'
+      '409':
+        $ref: '../openapi.yaml#/components/responses/Conflict'
+      '422':
+        $ref: '../openapi.yaml#/components/responses/UnprocessableEntity'
+      '429':
+        $ref: '../openapi.yaml#/components/responses/TooManyRequests'
+      '500':
+        $ref: '../openapi.yaml#/components/responses/InternalServerError'
+
+/venues/{venueId}/reservations/{reservationId}/seat:
+  parameters:
+  - name: venueId
+    in: path
+    required: true
+    description: Unique venue identifier
+    schema:
+      type: string
+      format: uuid
+  - name: reservationId
+    in: path
+    required: true
+    description: Unique reservation identifier
+    schema:
+      type: string
+      format: uuid
+  post:
+    tags:
+    - Table Reservations
+    summary: Seat reservation
+    description: |
+      Mark a reservation as seated (party has arrived and been seated).
+      
+      **Authorization:** Requires `write:reservations` scope
+      
+      **Rate Limit:** 100 requests/minute
+    operationId: seatTableReservation
+    security:
+    - OAuth2:
+      - write:reservations
+    - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/table-reservations.yaml#/ReservationSeatingRequest'
+    responses:
+      '200':
+        description: Reservation seated successfully
+        headers:
+          ETag:
+            $ref: '../openapi.yaml#/components/headers/ETag'
+          X-Request-Id:
+            $ref: '../openapi.yaml#/components/headers/X-Request-Id'
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/table-reservations.yaml#/TableReservation'
+      '400':
+        $ref: '../openapi.yaml#/components/responses/BadRequest'
+      '401':
+        $ref: '../openapi.yaml#/components/responses/Unauthorized'
+      '403':
+        $ref: '../openapi.yaml#/components/responses/Forbidden'
+      '404':
+        $ref: '../openapi.yaml#/components/responses/NotFound'
+      '409':
+        $ref: '../openapi.yaml#/components/responses/Conflict'
+      '422':
+        $ref: '../openapi.yaml#/components/responses/UnprocessableEntity'
+      '429':
+        $ref: '../openapi.yaml#/components/responses/TooManyRequests'
+      '500':
+        $ref: '../openapi.yaml#/components/responses/InternalServerError'
+
+/venues/{venueId}/reservations/{reservationId}/no-show:
+  parameters:
+  - name: venueId
+    in: path
+    required: true
+    description: Unique venue identifier
+    schema:
+      type: string
+      format: uuid
+  - name: reservationId
+    in: path
+    required: true
+    description: Unique reservation identifier
+    schema:
+      type: string
+      format: uuid
+  post:
+    tags:
+    - Table Reservations
+    summary: Mark as no-show
+    description: |
+      Mark a reservation as no-show (guest did not arrive).
+
+      **Authorization:** Requires `write:reservations` scope
+
+      **Rate Limit:** 100 requests/minute
+    operationId: noShowTableReservation
+    security:
+    - OAuth2:
+      - write:reservations
+    - BearerAuth: []
+    responses:
+      '200':
+        description: Reservation marked as no-show successfully
+        headers:
+          ETag:
+            $ref: '../openapi.yaml#/components/headers/ETag'
+          X-Request-Id:
+            $ref: '../openapi.yaml#/components/headers/X-Request-Id'
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/table-reservations.yaml#/TableReservation'
+      '400':
+        $ref: '../openapi.yaml#/components/responses/BadRequest'
+      '401':
+        $ref: '../openapi.yaml#/components/responses/Unauthorized'
+      '403':
+        $ref: '../openapi.yaml#/components/responses/Forbidden'
+      '404':
+        $ref: '../openapi.yaml#/components/responses/NotFound'
+      '409':
+        $ref: '../openapi.yaml#/components/responses/Conflict'
+      '422':
+        $ref: '../openapi.yaml#/components/responses/UnprocessableEntity'
+      '429':
+        $ref: '../openapi.yaml#/components/responses/TooManyRequests'
+      '500':
+        $ref: '../openapi.yaml#/components/responses/InternalServerError'
+
+/venues/{venueId}/waitlist:
+  parameters:
+  - name: venueId
+    in: path
+    required: true
+    description: Unique venue identifier
+    schema:
+      type: string
+      format: uuid
+  get:
+    tags:
+    - Waitlist
+    summary: List waitlist entries
+    description: |
+      Retrieve the current waitlist for a venue.
+
+      **Authorization:** Requires `read:reservations` scope
+
+      **Rate Limit:** 100 requests/minute
+    operationId: listWaitlist
+    security:
+    - OAuth2:
+      - read:reservations
+    - BearerAuth: []
+    parameters:
+    - $ref: '../openapi.yaml#/components/parameters/PageSize'
+    - $ref: '../openapi.yaml#/components/parameters/PageCursor'
+    - name: status
+      in: query
+      description: Filter by waitlist status
+      schema:
+        type: string
+        enum:
+        - WAITING
+        - NOTIFIED
+        - SEATED
+        - CANCELLED
+        - NO_SHOW
+    - $ref: '../openapi.yaml#/components/parameters/SortBy'
+    - $ref: '../openapi.yaml#/components/parameters/SortOrder'
+    responses:
+      '200':
+        description: Successful response
+        headers:
+          X-RateLimit-Limit:
+            $ref: '../openapi.yaml#/components/headers/X-RateLimit-Limit'
+          X-RateLimit-Remaining:
+            $ref: '../openapi.yaml#/components/headers/X-RateLimit-Remaining'
+          X-RateLimit-Reset:
+            $ref: '../openapi.yaml#/components/headers/X-RateLimit-Reset'
+          X-Request-Id:
+            $ref: '../openapi.yaml#/components/headers/X-Request-Id'
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/table-reservations.yaml#/WaitlistListResponse'
+      '400':
+        $ref: '../openapi.yaml#/components/responses/BadRequest'
+      '401':
+        $ref: '../openapi.yaml#/components/responses/Unauthorized'
+      '403':
+        $ref: '../openapi.yaml#/components/responses/Forbidden'
+      '404':
+        $ref: '../openapi.yaml#/components/responses/NotFound'
+      '429':
+        $ref: '../openapi.yaml#/components/responses/TooManyRequests'
+      '500':
+        $ref: '../openapi.yaml#/components/responses/InternalServerError'
+  post:
+    tags:
+    - Waitlist
+    summary: Add to waitlist
+    description: |
+      Add a guest to the waitlist.
+
+      **Authorization:** Requires `write:reservations` scope
+
+      **Rate Limit:** 100 requests/minute
+    operationId: addToWaitlist
+    security:
+    - OAuth2:
+      - write:reservations
+    - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/table-reservations.yaml#/WaitlistCreateRequest'
+    responses:
+      '201':
+        description: Added to waitlist successfully
+        headers:
+          Location:
+            $ref: '../openapi.yaml#/components/headers/Location'
+          X-Request-Id:
+            $ref: '../openapi.yaml#/components/headers/X-Request-Id'
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/table-reservations.yaml#/Waitlist'
+      '400':
+        $ref: '../openapi.yaml#/components/responses/BadRequest'
+      '401':
+        $ref: '../openapi.yaml#/components/responses/Unauthorized'
+      '403':
+        $ref: '../openapi.yaml#/components/responses/Forbidden'
+      '404':
+        $ref: '../openapi.yaml#/components/responses/NotFound'
+      '422':
+        $ref: '../openapi.yaml#/components/responses/UnprocessableEntity'
+      '429':
+        $ref: '../openapi.yaml#/components/responses/TooManyRequests'
+      '500':
+        $ref: '../openapi.yaml#/components/responses/InternalServerError'
+

@@ -1,0 +1,481 @@
+FloorSection:
+  type: object
+  description: Floor section or area within a venue
+  required:
+  - sectionName
+  - floorLevel
+  properties:
+    sectionId:
+      type: string
+      format: uuid
+      readOnly: true
+      description: Unique floor section identifier
+      example: f1111111-1111-1111-1111-111111111111
+    venueId:
+      type: string
+      format: uuid
+      description: Parent venue identifier
+      example: a1111111-1111-1111-1111-111111111111
+    sectionName:
+      type: string
+      minLength: 1
+      maxLength: 100
+      description: Section name
+      example: Main Dining Room
+    description:
+      type: string
+      maxLength: 500
+      description: Section description
+      example: Main indoor dining area with elegant ambiance
+    floorLevel:
+      type: integer
+      description: Floor level (1 = ground floor, 2 = second floor, etc.)
+      example: 1
+    isOutdoor:
+      type: boolean
+      default: false
+      description: Whether this is an outdoor section
+    isSmoking:
+      type: boolean
+      default: false
+      description: Whether smoking is allowed in this section
+    isPrivate:
+      type: boolean
+      default: false
+      description: Whether this is a private section
+    displayOrder:
+      type: integer
+      minimum: 0
+      description: Display order for UI
+      example: 1
+    colorCode:
+      type: string
+      pattern: '^#[0-9A-Fa-f]{6}$'
+      description: Color code for floor plan visualization
+      example: "#3498db"
+    maxCapacity:
+      type: integer
+      minimum: 0
+      description: Maximum capacity for this section
+      example: 50
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+    links:
+      type: object
+      readOnly: true
+      description: HATEOAS links
+      properties:
+        self:
+          type: string
+          format: uri
+        venue:
+          type: string
+          format: uri
+        tables:
+          type: string
+          format: uri
+
+Table:
+  type: object
+  description: Individual table within a venue
+  required:
+  - tableNumber
+  - minCapacity
+  - maxCapacity
+  - shape
+  properties:
+    tableId:
+      type: string
+      format: uuid
+      readOnly: true
+      description: Unique table identifier
+      example: t1111111-1111-1111-1111-111111111111
+    venueId:
+      type: string
+      format: uuid
+      description: Parent venue identifier
+      example: a1111111-1111-1111-1111-111111111111
+    sectionId:
+      type: string
+      format: uuid
+      description: Floor section identifier
+      example: f1111111-1111-1111-1111-111111111111
+    tableNumber:
+      type: string
+      minLength: 1
+      maxLength: 20
+      description: Table number or identifier
+      example: "101"
+    tableName:
+      type: string
+      maxLength: 100
+      description: Friendly table name
+      example: Table 101
+    minCapacity:
+      type: integer
+      minimum: 1
+      description: Minimum seating capacity
+      example: 2
+    maxCapacity:
+      type: integer
+      minimum: 1
+      description: Maximum seating capacity
+      example: 4
+    shape:
+      type: string
+      enum:
+      - SQUARE
+      - RECTANGLE
+      - ROUND
+      - OVAL
+      - BOOTH
+      - BAR_SEATING
+      - COUNTER
+      description: Table shape
+      example: ROUND
+    status:
+      type: string
+      enum:
+      - AVAILABLE
+      - OCCUPIED
+      - RESERVED
+      - CLEANING
+      - OUT_OF_SERVICE
+      description: Current table status
+      default: AVAILABLE
+    positionX:
+      type: number
+      format: float
+      description: X coordinate on floor plan
+      example: 100.5
+    positionY:
+      type: number
+      format: float
+      description: Y coordinate on floor plan
+      example: 200.75
+    rotation:
+      type: number
+      format: float
+      minimum: 0
+      maximum: 360
+      description: Rotation angle in degrees
+      example: 45.0
+    width:
+      type: number
+      format: float
+      description: Table width in cm
+      example: 120.0
+    height:
+      type: number
+      format: float
+      description: Table height in cm
+      example: 120.0
+    isAccessible:
+      type: boolean
+      default: false
+      description: Whether table is wheelchair accessible
+    isHighTop:
+      type: boolean
+      default: false
+      description: Whether this is a high-top table
+    hasPowerOutlet:
+      type: boolean
+      default: false
+      description: Whether table has power outlets
+    hasWindowView:
+      type: boolean
+      default: false
+      description: Whether table has a window view
+    isCombinable:
+      type: boolean
+      default: false
+      description: Whether table can be combined with others
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+    links:
+      type: object
+      readOnly: true
+      description: HATEOAS links
+      properties:
+        self:
+          type: string
+          format: uri
+        venue:
+          type: string
+          format: uri
+        section:
+          type: string
+          format: uri
+        reservations:
+          type: string
+          format: uri
+
+TableAvailability:
+  type: object
+  description: Table availability information
+  properties:
+    tableId:
+      type: string
+      format: uuid
+    tableNumber:
+      type: string
+    isAvailable:
+      type: boolean
+      description: Whether table is currently available
+    status:
+      type: string
+      enum:
+      - AVAILABLE
+      - OCCUPIED
+      - RESERVED
+      - CLEANING
+      - OUT_OF_SERVICE
+    currentReservation:
+      type: object
+      description: Current reservation if table is reserved/occupied
+      properties:
+        reservationId:
+          type: string
+          format: uuid
+        guestName:
+          type: string
+        partySize:
+          type: integer
+        reservationTime:
+          type: string
+          format: date-time
+    nextAvailableTime:
+      type: string
+      format: date-time
+      description: Next time table will be available
+
+FloorSectionCreateRequest:
+  type: object
+  description: Request to create a floor section
+  required:
+  - sectionName
+  - floorLevel
+  properties:
+    sectionName:
+      type: string
+      minLength: 1
+      maxLength: 100
+      example: Main Dining Room
+    description:
+      type: string
+      maxLength: 500
+    floorLevel:
+      type: integer
+      example: 1
+    isOutdoor:
+      type: boolean
+      default: false
+    isSmoking:
+      type: boolean
+      default: false
+    isPrivate:
+      type: boolean
+      default: false
+    displayOrder:
+      type: integer
+      minimum: 0
+    colorCode:
+      type: string
+      pattern: '^#[0-9A-Fa-f]{6}$'
+      example: "#3498db"
+    maxCapacity:
+      type: integer
+      minimum: 0
+
+FloorSectionUpdateRequest:
+  type: object
+  description: Request to update a floor section
+  properties:
+    sectionName:
+      type: string
+      minLength: 1
+      maxLength: 100
+    description:
+      type: string
+      maxLength: 500
+    isOutdoor:
+      type: boolean
+    isSmoking:
+      type: boolean
+    isPrivate:
+      type: boolean
+    displayOrder:
+      type: integer
+      minimum: 0
+    colorCode:
+      type: string
+      pattern: '^#[0-9A-Fa-f]{6}$'
+    maxCapacity:
+      type: integer
+      minimum: 0
+
+TableCreateRequest:
+  type: object
+  description: Request to create a table
+  required:
+  - tableNumber
+  - minCapacity
+  - maxCapacity
+  - shape
+  properties:
+    sectionId:
+      type: string
+      format: uuid
+    tableNumber:
+      type: string
+      minLength: 1
+      maxLength: 20
+      example: "101"
+    tableName:
+      type: string
+      maxLength: 100
+    minCapacity:
+      type: integer
+      minimum: 1
+      example: 2
+    maxCapacity:
+      type: integer
+      minimum: 1
+      example: 4
+    shape:
+      type: string
+      enum:
+      - SQUARE
+      - RECTANGLE
+      - ROUND
+      - OVAL
+      - BOOTH
+      - BAR_SEATING
+      - COUNTER
+      example: ROUND
+    positionX:
+      type: number
+      format: float
+    positionY:
+      type: number
+      format: float
+    rotation:
+      type: number
+      format: float
+      minimum: 0
+      maximum: 360
+    width:
+      type: number
+      format: float
+    height:
+      type: number
+      format: float
+    isAccessible:
+      type: boolean
+      default: false
+    isHighTop:
+      type: boolean
+      default: false
+    hasPowerOutlet:
+      type: boolean
+      default: false
+    hasWindowView:
+      type: boolean
+      default: false
+    isCombinable:
+      type: boolean
+      default: false
+
+TableUpdateRequest:
+  type: object
+  description: Request to update a table
+  properties:
+    sectionId:
+      type: string
+      format: uuid
+    tableName:
+      type: string
+      maxLength: 100
+    minCapacity:
+      type: integer
+      minimum: 1
+    maxCapacity:
+      type: integer
+      minimum: 1
+    status:
+      type: string
+      enum:
+      - AVAILABLE
+      - OCCUPIED
+      - RESERVED
+      - CLEANING
+      - OUT_OF_SERVICE
+    positionX:
+      type: number
+      format: float
+    positionY:
+      type: number
+      format: float
+    rotation:
+      type: number
+      format: float
+    width:
+      type: number
+      format: float
+    height:
+      type: number
+      format: float
+    isAccessible:
+      type: boolean
+    isHighTop:
+      type: boolean
+    hasPowerOutlet:
+      type: boolean
+    hasWindowView:
+      type: boolean
+    isCombinable:
+      type: boolean
+
+FloorSectionListResponse:
+  allOf:
+  - $ref: 'common.yaml#/PaginatedResponse'
+  - type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/FloorSection'
+
+TableListResponse:
+  allOf:
+  - $ref: 'common.yaml#/PaginatedResponse'
+  - type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/Table'
+
+TableAvailabilityResponse:
+  type: object
+  properties:
+    venueId:
+      type: string
+      format: uuid
+    date:
+      type: string
+      format: date
+    timeSlot:
+      type: string
+      format: time
+    availableTables:
+      type: array
+      items:
+        $ref: '#/TableAvailability'
+    totalAvailable:
+      type: integer
+      description: Total number of available tables
+    totalCapacity:
+      type: integer
+      description: Total available seating capacity
+

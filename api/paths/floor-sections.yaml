@@ -1,0 +1,281 @@
+/venues/{venueId}/floor-sections:
+  parameters:
+  - name: venueId
+    in: path
+    required: true
+    description: Unique venue identifier
+    schema:
+      type: string
+      format: uuid
+  get:
+    tags:
+    - Floor Sections
+    summary: List floor sections
+    description: |
+      Retrieve a paginated list of floor sections for a venue.
+      
+      **Authorization:** Requires `read:tables` scope
+      
+      **Rate Limit:** 100 requests/minute
+    operationId: listFloorSections
+    security:
+    - OAuth2:
+      - read:tables
+    - BearerAuth: []
+    parameters:
+    - $ref: '../openapi.yaml#/components/parameters/PageSize'
+    - $ref: '../openapi.yaml#/components/parameters/PageCursor'
+    - name: floorLevel
+      in: query
+      description: Filter by floor level
+      schema:
+        type: integer
+    - name: isOutdoor
+      in: query
+      description: Filter by outdoor sections
+      schema:
+        type: boolean
+    - name: isPrivate
+      in: query
+      description: Filter by private sections
+      schema:
+        type: boolean
+    - $ref: '../openapi.yaml#/components/parameters/SortBy'
+    - $ref: '../openapi.yaml#/components/parameters/SortOrder'
+    - $ref: '../openapi.yaml#/components/parameters/Expand'
+    responses:
+      '200':
+        description: Successful response
+        headers:
+          X-RateLimit-Limit:
+            $ref: '../openapi.yaml#/components/headers/X-RateLimit-Limit'
+          X-RateLimit-Remaining:
+            $ref: '../openapi.yaml#/components/headers/X-RateLimit-Remaining'
+          X-RateLimit-Reset:
+            $ref: '../openapi.yaml#/components/headers/X-RateLimit-Reset'
+          X-Request-Id:
+            $ref: '../openapi.yaml#/components/headers/X-Request-Id'
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/tables.yaml#/FloorSectionListResponse'
+      '400':
+        $ref: '../openapi.yaml#/components/responses/BadRequest'
+      '401':
+        $ref: '../openapi.yaml#/components/responses/Unauthorized'
+      '403':
+        $ref: '../openapi.yaml#/components/responses/Forbidden'
+      '404':
+        $ref: '../openapi.yaml#/components/responses/NotFound'
+      '429':
+        $ref: '../openapi.yaml#/components/responses/TooManyRequests'
+      '500':
+        $ref: '../openapi.yaml#/components/responses/InternalServerError'
+  post:
+    tags:
+    - Floor Sections
+    summary: Create floor section
+    description: |
+      Create a new floor section for a venue.
+      
+      **Authorization:** Requires `write:tables` scope
+      
+      **Rate Limit:** 100 requests/minute
+      
+      **Idempotency:** Supports idempotency key
+    operationId: createFloorSection
+    security:
+    - OAuth2:
+      - write:tables
+    - BearerAuth: []
+    parameters:
+    - $ref: '../openapi.yaml#/components/parameters/IdempotencyKey'
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/tables.yaml#/FloorSectionCreateRequest'
+    responses:
+      '201':
+        description: Floor section created successfully
+        headers:
+          Location:
+            $ref: '../openapi.yaml#/components/headers/Location'
+          ETag:
+            $ref: '../openapi.yaml#/components/headers/ETag'
+          X-Request-Id:
+            $ref: '../openapi.yaml#/components/headers/X-Request-Id'
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/tables.yaml#/FloorSection'
+      '400':
+        $ref: '../openapi.yaml#/components/responses/BadRequest'
+      '401':
+        $ref: '../openapi.yaml#/components/responses/Unauthorized'
+      '403':
+        $ref: '../openapi.yaml#/components/responses/Forbidden'
+      '404':
+        $ref: '../openapi.yaml#/components/responses/NotFound'
+      '409':
+        $ref: '../openapi.yaml#/components/responses/Conflict'
+      '422':
+        $ref: '../openapi.yaml#/components/responses/UnprocessableEntity'
+      '429':
+        $ref: '../openapi.yaml#/components/responses/TooManyRequests'
+      '500':
+        $ref: '../openapi.yaml#/components/responses/InternalServerError'
+
+/venues/{venueId}/floor-sections/{sectionId}:
+  parameters:
+  - name: venueId
+    in: path
+    required: true
+    description: Unique venue identifier
+    schema:
+      type: string
+      format: uuid
+  - name: sectionId
+    in: path
+    required: true
+    description: Unique floor section identifier
+    schema:
+      type: string
+      format: uuid
+  get:
+    tags:
+    - Floor Sections
+    summary: Get floor section
+    description: |
+      Retrieve a specific floor section by ID.
+      
+      **Authorization:** Requires `read:tables` scope
+      
+      **Rate Limit:** 100 requests/minute
+    operationId: getFloorSection
+    security:
+    - OAuth2:
+      - read:tables
+    - BearerAuth: []
+    parameters:
+    - $ref: '../openapi.yaml#/components/parameters/Expand'
+    - $ref: '../openapi.yaml#/components/parameters/IfNoneMatch'
+    responses:
+      '200':
+        description: Successful response
+        headers:
+          ETag:
+            $ref: '../openapi.yaml#/components/headers/ETag'
+          X-Request-Id:
+            $ref: '../openapi.yaml#/components/headers/X-Request-Id'
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/tables.yaml#/FloorSection'
+      '304':
+        description: Not Modified (ETag matched)
+      '400':
+        $ref: '../openapi.yaml#/components/responses/BadRequest'
+      '401':
+        $ref: '../openapi.yaml#/components/responses/Unauthorized'
+      '403':
+        $ref: '../openapi.yaml#/components/responses/Forbidden'
+      '404':
+        $ref: '../openapi.yaml#/components/responses/NotFound'
+      '429':
+        $ref: '../openapi.yaml#/components/responses/TooManyRequests'
+      '500':
+        $ref: '../openapi.yaml#/components/responses/InternalServerError'
+  put:
+    tags:
+    - Floor Sections
+    summary: Update floor section
+    description: |
+      Update an existing floor section.
+
+      **Authorization:** Requires `write:tables` scope
+
+      **Rate Limit:** 100 requests/minute
+
+      **Optimistic Locking:** Supports If-Match header with ETag
+    operationId: updateFloorSection
+    security:
+    - OAuth2:
+      - write:tables
+    - BearerAuth: []
+    parameters:
+    - $ref: '../openapi.yaml#/components/parameters/IfMatch'
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/tables.yaml#/FloorSectionUpdateRequest'
+    responses:
+      '200':
+        description: Floor section updated successfully
+        headers:
+          ETag:
+            $ref: '../openapi.yaml#/components/headers/ETag'
+          X-Request-Id:
+            $ref: '../openapi.yaml#/components/headers/X-Request-Id'
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/tables.yaml#/FloorSection'
+      '400':
+        $ref: '../openapi.yaml#/components/responses/BadRequest'
+      '401':
+        $ref: '../openapi.yaml#/components/responses/Unauthorized'
+      '403':
+        $ref: '../openapi.yaml#/components/responses/Forbidden'
+      '404':
+        $ref: '../openapi.yaml#/components/responses/NotFound'
+      '409':
+        $ref: '../openapi.yaml#/components/responses/Conflict'
+      '412':
+        $ref: '../openapi.yaml#/components/responses/PreconditionFailed'
+      '422':
+        $ref: '../openapi.yaml#/components/responses/UnprocessableEntity'
+      '429':
+        $ref: '../openapi.yaml#/components/responses/TooManyRequests'
+      '500':
+        $ref: '../openapi.yaml#/components/responses/InternalServerError'
+  delete:
+    tags:
+    - Floor Sections
+    summary: Delete floor section
+    description: |
+      Delete a floor section (soft delete).
+
+      **Authorization:** Requires `write:tables` scope
+
+      **Rate Limit:** 100 requests/minute
+    operationId: deleteFloorSection
+    security:
+    - OAuth2:
+      - write:tables
+    - BearerAuth: []
+    parameters:
+    - $ref: '../openapi.yaml#/components/parameters/IfMatch'
+    responses:
+      '204':
+        $ref: '../openapi.yaml#/components/responses/NoContent'
+      '400':
+        $ref: '../openapi.yaml#/components/responses/BadRequest'
+      '401':
+        $ref: '../openapi.yaml#/components/responses/Unauthorized'
+      '403':
+        $ref: '../openapi.yaml#/components/responses/Forbidden'
+      '404':
+        $ref: '../openapi.yaml#/components/responses/NotFound'
+      '409':
+        $ref: '../openapi.yaml#/components/responses/Conflict'
+      '412':
+        $ref: '../openapi.yaml#/components/responses/PreconditionFailed'
+      '429':
+        $ref: '../openapi.yaml#/components/responses/TooManyRequests'
+      '500':
+        $ref: '../openapi.yaml#/components/responses/InternalServerError'
+

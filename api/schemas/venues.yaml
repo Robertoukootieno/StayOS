@@ -1,0 +1,382 @@
+Venue:
+  type: object
+  description: Restaurant, bar, cafe, or other food & beverage venue
+  required:
+  - name
+  - venueType
+  - venueClassification
+  - location
+  - timezone
+  properties:
+    venueId:
+      type: string
+      format: uuid
+      readOnly: true
+      description: Unique venue identifier
+      example: a1111111-1111-1111-1111-111111111111
+    propertyId:
+      type: string
+      format: uuid
+      description: Parent property identifier (if venue is part of a larger property)
+      example: 550e8400-e29b-41d4-a716-446655440000
+    venueCode:
+      type: string
+      minLength: 1
+      maxLength: 50
+      description: Unique venue code
+      example: REST-001
+    name:
+      type: string
+      minLength: 1
+      maxLength: 255
+      description: Venue name
+      example: La Bella Vista
+    venueType:
+      type: string
+      enum:
+      - RESTAURANT
+      - BAR
+      - CAFE
+      - BISTRO
+      - PUB
+      - FOOD_TRUCK
+      - NIGHTCLUB
+      description: Type of venue
+      example: RESTAURANT
+    venueClassification:
+      type: string
+      enum:
+      - FINE_DINING
+      - CASUAL_DINING
+      - FAST_CASUAL
+      - QUICK_SERVICE
+      - FOOD_COURT
+      - BUFFET
+      - CAFE
+      - BAKERY
+      - BAR
+      - LOUNGE
+      - NIGHTCLUB
+      - FOOD_TRUCK
+      description: Venue classification
+      example: FINE_DINING
+    seatingCapacity:
+      type: integer
+      minimum: 1
+      description: Total seating capacity
+      example: 80
+    hasOutdoorSeating:
+      type: boolean
+      default: false
+      description: Whether venue has outdoor seating
+    hasBar:
+      type: boolean
+      default: false
+      description: Whether venue has a bar
+    hasPrivateDining:
+      type: boolean
+      default: false
+      description: Whether venue has private dining rooms
+    cuisineTypes:
+      type: array
+      items:
+        type: string
+      description: Types of cuisine offered
+      example:
+      - Italian
+      - Mediterranean
+    dressCode:
+      type: string
+      maxLength: 100
+      description: Dress code policy
+      example: Business Casual
+    parkingAvailable:
+      type: boolean
+      default: false
+      description: Whether parking is available
+    acceptsReservations:
+      type: boolean
+      default: true
+      description: Whether venue accepts reservations
+    acceptsWalkIns:
+      type: boolean
+      default: true
+      description: Whether venue accepts walk-ins
+    deliveryAvailable:
+      type: boolean
+      default: false
+      description: Whether delivery is available
+    takeoutAvailable:
+      type: boolean
+      default: false
+      description: Whether takeout is available
+    location:
+      $ref: 'common.yaml#/Address'
+    coordinates:
+      $ref: 'common.yaml#/GeoCoordinates'
+    timezone:
+      type: string
+      description: IANA timezone identifier
+      example: America/Los_Angeles
+    contactInfo:
+      $ref: 'common.yaml#/ContactInfo'
+    operatingHours:
+      type: object
+      description: Operating hours by day of week
+      properties:
+        monday:
+          $ref: '#/DaySchedule'
+        tuesday:
+          $ref: '#/DaySchedule'
+        wednesday:
+          $ref: '#/DaySchedule'
+        thursday:
+          $ref: '#/DaySchedule'
+        friday:
+          $ref: '#/DaySchedule'
+        saturday:
+          $ref: '#/DaySchedule'
+        sunday:
+          $ref: '#/DaySchedule'
+    operationalStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - SUSPENDED
+      - CLOSED
+      - TEMPORARILY_CLOSED
+      description: Current operational status
+      default: ACTIVE
+    metadata:
+      $ref: 'common.yaml#/AuditMetadata'
+    links:
+      type: object
+      readOnly: true
+      description: HATEOAS links
+      properties:
+        self:
+          type: string
+          format: uri
+        tables:
+          type: string
+          format: uri
+        floorSections:
+          type: string
+          format: uri
+        reservations:
+          type: string
+          format: uri
+        menu:
+          type: string
+          format: uri
+
+DaySchedule:
+  type: object
+  description: Operating hours for a single day
+  properties:
+    isOpen:
+      type: boolean
+      description: Whether venue is open on this day
+      default: true
+    openTime:
+      type: string
+      format: time
+      description: Opening time (HH:MM format)
+      example: "11:00"
+    closeTime:
+      type: string
+      format: time
+      description: Closing time (HH:MM format)
+      example: "22:00"
+    breaks:
+      type: array
+      description: Break periods (e.g., between lunch and dinner)
+      items:
+        type: object
+        properties:
+          startTime:
+            type: string
+            format: time
+            example: "15:00"
+          endTime:
+            type: string
+            format: time
+            example: "17:00"
+
+VenueCreateRequest:
+  type: object
+  description: Request to create a new venue
+  required:
+  - name
+  - venueType
+  - venueClassification
+  - location
+  - timezone
+  - contactInfo
+  - seatingCapacity
+  properties:
+    venueCode:
+      type: string
+      minLength: 1
+      maxLength: 50
+      description: Unique venue code
+      example: REST-001
+    name:
+      type: string
+      minLength: 1
+      maxLength: 255
+      description: Venue name
+      example: La Bella Vista
+    venueType:
+      type: string
+      enum:
+      - RESTAURANT
+      - BAR
+      - CAFE
+      - BISTRO
+      - PUB
+      - FOOD_TRUCK
+      - NIGHTCLUB
+      description: Type of venue
+      example: RESTAURANT
+    venueClassification:
+      type: string
+      enum:
+      - FINE_DINING
+      - CASUAL_DINING
+      - FAST_CASUAL
+      - QUICK_SERVICE
+      - FOOD_COURT
+      - BUFFET
+      - CAFE
+      - BAKERY
+      - BAR
+      - LOUNGE
+      - NIGHTCLUB
+      - FOOD_TRUCK
+      description: Venue classification
+      example: FINE_DINING
+    seatingCapacity:
+      type: integer
+      minimum: 1
+      description: Total seating capacity
+      example: 80
+    hasOutdoorSeating:
+      type: boolean
+      default: false
+    hasBar:
+      type: boolean
+      default: false
+    hasPrivateDining:
+      type: boolean
+      default: false
+    cuisineTypes:
+      type: array
+      items:
+        type: string
+      example:
+      - Italian
+      - Mediterranean
+    dressCode:
+      type: string
+      maxLength: 100
+      example: Business Casual
+    parkingAvailable:
+      type: boolean
+      default: false
+    acceptsReservations:
+      type: boolean
+      default: true
+    acceptsWalkIns:
+      type: boolean
+      default: true
+    deliveryAvailable:
+      type: boolean
+      default: false
+    takeoutAvailable:
+      type: boolean
+      default: false
+    location:
+      $ref: 'common.yaml#/Address'
+    coordinates:
+      $ref: 'common.yaml#/GeoCoordinates'
+    timezone:
+      type: string
+      description: IANA timezone identifier
+      example: America/Los_Angeles
+    contactInfo:
+      $ref: 'common.yaml#/ContactInfo'
+    operatingHours:
+      type: object
+      properties:
+        monday:
+          $ref: '#/DaySchedule'
+        tuesday:
+          $ref: '#/DaySchedule'
+        wednesday:
+          $ref: '#/DaySchedule'
+        thursday:
+          $ref: '#/DaySchedule'
+        friday:
+          $ref: '#/DaySchedule'
+        saturday:
+          $ref: '#/DaySchedule'
+        sunday:
+          $ref: '#/DaySchedule'
+
+VenueUpdateRequest:
+  type: object
+  description: Request to update an existing venue
+  properties:
+    name:
+      type: string
+      minLength: 1
+      maxLength: 255
+    seatingCapacity:
+      type: integer
+      minimum: 1
+    hasOutdoorSeating:
+      type: boolean
+    hasBar:
+      type: boolean
+    hasPrivateDining:
+      type: boolean
+    cuisineTypes:
+      type: array
+      items:
+        type: string
+    dressCode:
+      type: string
+      maxLength: 100
+    parkingAvailable:
+      type: boolean
+    acceptsReservations:
+      type: boolean
+    acceptsWalkIns:
+      type: boolean
+    deliveryAvailable:
+      type: boolean
+    takeoutAvailable:
+      type: boolean
+    contactInfo:
+      $ref: 'common.yaml#/ContactInfo'
+    operatingHours:
+      type: object
+    operationalStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - SUSPENDED
+      - CLOSED
+      - TEMPORARILY_CLOSED
+
+VenueListResponse:
+  allOf:
+  - $ref: 'common.yaml#/PaginatedResponse'
+  - type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/Venue'
+
