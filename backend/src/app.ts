@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import logger from './config/logger';
 import authRouter from './routes/auth';
 import propertiesRouter from './routes/properties';
+import venuesRouter from './routes/venues';
 
 // Import new middleware
 import { tracingMiddleware } from './middleware/tracing';
@@ -87,6 +88,7 @@ app.get('/health', (_req: Request, res: Response) => {
 const apiPrefix = process.env.API_PREFIX || '/v1';
 app.use(`${apiPrefix}/auth`, authRouter);
 app.use(`${apiPrefix}/properties`, propertiesRouter);
+app.use(`${apiPrefix}/venues`, venuesRouter);
 
 // 404 handler
 app.use((req: Request, res: Response) => {
