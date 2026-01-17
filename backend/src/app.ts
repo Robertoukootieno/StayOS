@@ -7,6 +7,7 @@ import logger from './config/logger';
 import authRouter from './routes/auth';
 import propertiesRouter from './routes/properties';
 import venuesRouter from './routes/venues';
+import tablesRouter from './routes/tables';
 
 // Import new middleware
 import { tracingMiddleware } from './middleware/tracing';
@@ -89,6 +90,7 @@ const apiPrefix = process.env.API_PREFIX || '/v1';
 app.use(`${apiPrefix}/auth`, authRouter);
 app.use(`${apiPrefix}/properties`, propertiesRouter);
 app.use(`${apiPrefix}/venues`, venuesRouter);
+app.use(`${apiPrefix}/venues/:venueId/tables`, tablesRouter);
 
 // 404 handler
 app.use((req: Request, res: Response) => {
