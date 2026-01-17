@@ -156,6 +156,7 @@ components:
       type: mutualTLS
       description: Mutual TLS for high-security integrations
   parameters:
+    # Pagination & Filtering
     PageSize:
       $ref: ./parameters/common-parameters.yaml#/PageSize
     PageCursor:
@@ -168,13 +169,63 @@ components:
       $ref: ./parameters/common-parameters.yaml#/SortOrder
     Expand:
       $ref: ./parameters/common-parameters.yaml#/Expand
+    # Idempotency & Concurrency
     IdempotencyKey:
       $ref: ./parameters/common-parameters.yaml#/IdempotencyKey
     IfMatch:
       $ref: ./parameters/common-parameters.yaml#/IfMatch
     IfNoneMatch:
       $ref: ./parameters/common-parameters.yaml#/IfNoneMatch
+    # Multi-Tenancy & Organization
+    TenantId:
+      $ref: ./parameters/common-parameters.yaml#/TenantId
+    BrandId:
+      $ref: ./parameters/common-parameters.yaml#/BrandId
+    OrganizationId:
+      $ref: ./parameters/common-parameters.yaml#/OrganizationId
+    # Localization & Internationalization
+    AcceptLanguage:
+      $ref: ./parameters/common-parameters.yaml#/AcceptLanguage
+    ContentLanguage:
+      $ref: ./parameters/common-parameters.yaml#/ContentLanguage
+    Timezone:
+      $ref: ./parameters/common-parameters.yaml#/Timezone
+    Currency:
+      $ref: ./parameters/common-parameters.yaml#/Currency
+    # Correlation, Observability & Tracing
+    CorrelationId:
+      $ref: ./parameters/common-parameters.yaml#/CorrelationId
+    TraceId:
+      $ref: ./parameters/common-parameters.yaml#/TraceId
+    SpanId:
+      $ref: ./parameters/common-parameters.yaml#/SpanId
+    ClientId:
+      $ref: ./parameters/common-parameters.yaml#/ClientId
+    ClientVersion:
+      $ref: ./parameters/common-parameters.yaml#/ClientVersion
+    UserAgent:
+      $ref: ./parameters/common-parameters.yaml#/UserAgent
+    # Versioning & Feature Flags
+    ApiVersion:
+      $ref: ./parameters/common-parameters.yaml#/ApiVersion
+    FeatureFlags:
+      $ref: ./parameters/common-parameters.yaml#/FeatureFlags
+    # Security & Compliance
+    ForwardedFor:
+      $ref: ./parameters/common-parameters.yaml#/ForwardedFor
+    RealIp:
+      $ref: ./parameters/common-parameters.yaml#/RealIp
+    DeviceId:
+      $ref: ./parameters/common-parameters.yaml#/DeviceId
+    SessionId:
+      $ref: ./parameters/common-parameters.yaml#/SessionId
+    # Performance & Caching
+    CacheControl:
+      $ref: ./parameters/common-parameters.yaml#/CacheControl
+    Prefer:
+      $ref: ./parameters/common-parameters.yaml#/Prefer
   headers:
+    # Rate Limiting
     X-RateLimit-Limit:
       description: Request limit per time window
       schema:
@@ -188,15 +239,88 @@ components:
       schema:
         type: integer
         format: int64
+    # Tracing & Correlation
     X-Request-Id:
       description: Unique request identifier for tracing
       schema:
         type: string
         format: uuid
+    X-Correlation-Id:
+      $ref: ./headers/common-headers.yaml#/X-Correlation-Id
+    X-Trace-Id:
+      $ref: ./headers/common-headers.yaml#/X-Trace-Id
+    X-Span-Id:
+      $ref: ./headers/common-headers.yaml#/X-Span-Id
+    # Multi-Tenancy
+    X-Tenant-Id:
+      $ref: ./headers/common-headers.yaml#/X-Tenant-Id
+    X-Brand-Id:
+      $ref: ./headers/common-headers.yaml#/X-Brand-Id
+    # Localization
+    Content-Language:
+      $ref: ./headers/common-headers.yaml#/Content-Language
+    X-Currency:
+      $ref: ./headers/common-headers.yaml#/X-Currency
+    X-Timezone:
+      $ref: ./headers/common-headers.yaml#/X-Timezone
+    # Versioning
+    X-API-Version:
+      $ref: ./headers/common-headers.yaml#/X-API-Version
+    X-Deprecation:
+      $ref: ./headers/common-headers.yaml#/X-Deprecation
+    X-Sunset:
+      $ref: ./headers/common-headers.yaml#/X-Sunset
+    Link:
+      $ref: ./headers/common-headers.yaml#/Link
+    # Caching & Concurrency
     ETag:
       $ref: ./headers/common-headers.yaml#/ETag
+    Cache-Control:
+      $ref: ./headers/common-headers.yaml#/Cache-Control
+    Expires:
+      $ref: ./headers/common-headers.yaml#/Expires
+    Last-Modified:
+      $ref: ./headers/common-headers.yaml#/Last-Modified
+    Age:
+      $ref: ./headers/common-headers.yaml#/Age
+    Vary:
+      $ref: ./headers/common-headers.yaml#/Vary
+    # Resource Management
     Location:
       $ref: ./headers/common-headers.yaml#/Location
+    X-Resource-Version:
+      $ref: ./headers/common-headers.yaml#/X-Resource-Version
+    X-Resource-State:
+      $ref: ./headers/common-headers.yaml#/X-Resource-State
+    X-Last-Modified-By:
+      $ref: ./headers/common-headers.yaml#/X-Last-Modified-By
+    # Pagination
+    X-Total-Count:
+      $ref: ./headers/common-headers.yaml#/X-Total-Count
+    X-Page-Size:
+      $ref: ./headers/common-headers.yaml#/X-Page-Size
+    X-Page-Number:
+      $ref: ./headers/common-headers.yaml#/X-Page-Number
+    X-Total-Pages:
+      $ref: ./headers/common-headers.yaml#/X-Total-Pages
+    X-Has-More:
+      $ref: ./headers/common-headers.yaml#/X-Has-More
+    # Retry & Async
+    Retry-After:
+      $ref: ./headers/common-headers.yaml#/Retry-After
+    X-Poll-Interval:
+      $ref: ./headers/common-headers.yaml#/X-Poll-Interval
+    # Security
+    Strict-Transport-Security:
+      $ref: ./headers/common-headers.yaml#/Strict-Transport-Security
+    X-Content-Type-Options:
+      $ref: ./headers/common-headers.yaml#/X-Content-Type-Options
+    X-Frame-Options:
+      $ref: ./headers/common-headers.yaml#/X-Frame-Options
+    X-XSS-Protection:
+      $ref: ./headers/common-headers.yaml#/X-XSS-Protection
+    Content-Security-Policy:
+      $ref: ./headers/common-headers.yaml#/Content-Security-Policy
   responses:
     NoContent:
       $ref: ./responses/common-responses.yaml#/NoContent

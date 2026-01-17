@@ -29,3 +29,220 @@ X-Request-Id:
   schema:
     type: string
     format: uuid
+
+# ============================================================================
+# Correlation & Tracing (Response Headers)
+# ============================================================================
+
+X-Correlation-Id:
+  description: Correlation ID echoed back from request
+  schema:
+    type: string
+    format: uuid
+
+X-Trace-Id:
+  description: Distributed tracing ID (OpenTelemetry)
+  schema:
+    type: string
+
+X-Span-Id:
+  description: Span ID for this request
+  schema:
+    type: string
+
+# ============================================================================
+# Multi-Tenancy (Response Headers)
+# ============================================================================
+
+X-Tenant-Id:
+  description: Tenant ID for the response data
+  schema:
+    type: string
+    format: uuid
+
+X-Brand-Id:
+  description: Brand ID for the response data
+  schema:
+    type: string
+    format: uuid
+
+# ============================================================================
+# Localization (Response Headers)
+# ============================================================================
+
+Content-Language:
+  description: Language of the response content (ISO 639-1)
+  schema:
+    type: string
+
+X-Currency:
+  description: Currency used in monetary values (ISO 4217)
+  schema:
+    type: string
+
+X-Timezone:
+  description: Timezone used for date/time values (IANA)
+  schema:
+    type: string
+
+# ============================================================================
+# Versioning (Response Headers)
+# ============================================================================
+
+X-API-Version:
+  description: API version used to process the request
+  schema:
+    type: string
+
+X-Deprecation:
+  description: |
+    Indicates the endpoint is deprecated.
+    Value is the deprecation date (ISO 8601).
+  schema:
+    type: string
+    format: date
+
+X-Sunset:
+  description: |
+    Date when the endpoint will be removed (ISO 8601).
+    Used with deprecated endpoints.
+  schema:
+    type: string
+    format: date-time
+
+Link:
+  description: |
+    Links to related resources (RFC 8288).
+    Used for pagination, deprecation notices, etc.
+  schema:
+    type: string
+
+# ============================================================================
+# Performance & Caching (Response Headers)
+# ============================================================================
+
+Cache-Control:
+  description: Caching directives for the response
+  schema:
+    type: string
+
+Expires:
+  description: Expiration date/time for cached response
+  schema:
+    type: string
+    format: date-time
+
+Last-Modified:
+  description: Last modification date/time of the resource
+  schema:
+    type: string
+    format: date-time
+
+Age:
+  description: Age of the cached response in seconds
+  schema:
+    type: integer
+
+Vary:
+  description: Headers that affect caching
+  schema:
+    type: string
+
+# ============================================================================
+# Security (Response Headers)
+# ============================================================================
+
+Strict-Transport-Security:
+  description: HSTS header for HTTPS enforcement
+  schema:
+    type: string
+
+X-Content-Type-Options:
+  description: Prevents MIME type sniffing
+  schema:
+    type: string
+    enum:
+      - nosniff
+
+X-Frame-Options:
+  description: Clickjacking protection
+  schema:
+    type: string
+    enum:
+      - DENY
+      - SAMEORIGIN
+
+X-XSS-Protection:
+  description: XSS filter configuration
+  schema:
+    type: string
+
+Content-Security-Policy:
+  description: Content Security Policy directives
+  schema:
+    type: string
+
+# ============================================================================
+# Pagination (Response Headers)
+# ============================================================================
+
+X-Total-Count:
+  description: Total number of items (all pages)
+  schema:
+    type: integer
+
+X-Page-Size:
+  description: Number of items per page
+  schema:
+    type: integer
+
+X-Page-Number:
+  description: Current page number (1-based)
+  schema:
+    type: integer
+
+X-Total-Pages:
+  description: Total number of pages
+  schema:
+    type: integer
+
+X-Has-More:
+  description: Whether more pages are available
+  schema:
+    type: boolean
+
+# ============================================================================
+# Retry & Async Operations (Response Headers)
+# ============================================================================
+
+Retry-After:
+  description: |
+    Seconds to wait before retrying (429, 503 responses).
+    Can also be an HTTP date.
+  schema:
+    type: string
+
+X-Poll-Interval:
+  description: Recommended polling interval in seconds for async operations
+  schema:
+    type: integer
+
+# ============================================================================
+# Resource State (Response Headers)
+# ============================================================================
+
+X-Resource-Version:
+  description: Version number of the resource (for optimistic locking)
+  schema:
+    type: integer
+
+X-Resource-State:
+  description: Current state of the resource
+  schema:
+    type: string
+
+X-Last-Modified-By:
+  description: User ID who last modified the resource
+  schema:
+    type: string
+    format: uuid

@@ -63,3 +63,234 @@ IfNoneMatch:
   description: ETag for conditional requests
   schema:
     type: string
+
+# ============================================================================
+# Multi-Tenancy & Organization
+# ============================================================================
+
+TenantId:
+  name: X-Tenant-Id
+  in: header
+  description: |
+    Tenant identifier for multi-tenant isolation.
+    Required for all API requests to ensure data isolation.
+  required: true
+  schema:
+    type: string
+    format: uuid
+  example: 550e8400-e29b-41d4-a716-446655440000
+
+BrandId:
+  name: X-Brand-Id
+  in: header
+  description: |
+    Brand identifier for multi-brand organizations.
+    Optional - used when a tenant manages multiple brands.
+  schema:
+    type: string
+    format: uuid
+  example: 660e8400-e29b-41d4-a716-446655440001
+
+OrganizationId:
+  name: X-Organization-Id
+  in: header
+  description: |
+    Organization identifier for enterprise hierarchies.
+    Optional - used for corporate/franchise structures.
+  schema:
+    type: string
+    format: uuid
+  example: 770e8400-e29b-41d4-a716-446655440002
+
+# ============================================================================
+# Localization & Internationalization
+# ============================================================================
+
+AcceptLanguage:
+  name: Accept-Language
+  in: header
+  description: |
+    Preferred language for response content (ISO 639-1).
+    Supports multiple languages with quality values.
+  schema:
+    type: string
+    default: en
+  example: en-US,en;q=0.9,es;q=0.8
+
+ContentLanguage:
+  name: Content-Language
+  in: header
+  description: Language of the request content (ISO 639-1)
+  schema:
+    type: string
+  example: en-US
+
+Timezone:
+  name: X-Timezone
+  in: header
+  description: |
+    Client timezone for date/time operations (IANA timezone).
+    Used for scheduling, availability, and reporting.
+  schema:
+    type: string
+    default: UTC
+  example: America/New_York
+
+Currency:
+  name: X-Currency
+  in: header
+  description: |
+    Preferred currency for monetary values (ISO 4217).
+    Overrides property default currency.
+  schema:
+    type: string
+    pattern: '^[A-Z]{3}$'
+  example: USD
+
+# ============================================================================
+# Correlation, Observability & Tracing
+# ============================================================================
+
+CorrelationId:
+  name: X-Correlation-Id
+  in: header
+  description: |
+    Correlation ID for tracking related requests across services.
+    Client-generated UUID to correlate multiple API calls.
+  schema:
+    type: string
+    format: uuid
+  example: 880e8400-e29b-41d4-a716-446655440003
+
+TraceId:
+  name: X-Trace-Id
+  in: header
+  description: |
+    Distributed tracing ID (OpenTelemetry compatible).
+    Auto-generated if not provided.
+  schema:
+    type: string
+  example: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
+
+SpanId:
+  name: X-Span-Id
+  in: header
+  description: Span ID for distributed tracing (OpenTelemetry)
+  schema:
+    type: string
+  example: 00f067aa0ba902b7
+
+ClientId:
+  name: X-Client-Id
+  in: header
+  description: |
+    Client application identifier for analytics and monitoring.
+    Helps track API usage by client application.
+  schema:
+    type: string
+  example: stayos-web-app-v2.1.0
+
+ClientVersion:
+  name: X-Client-Version
+  in: header
+  description: Client application version (semantic versioning)
+  schema:
+    type: string
+    pattern: '^\d+\.\d+\.\d+$'
+  example: 2.1.0
+
+UserAgent:
+  name: User-Agent
+  in: header
+  description: Client user agent string
+  schema:
+    type: string
+  example: StayOS-Mobile/2.1.0 (iOS 17.0; iPhone14,2)
+
+# ============================================================================
+# Versioning & Feature Flags
+# ============================================================================
+
+ApiVersion:
+  name: X-API-Version
+  in: header
+  description: |
+    Explicit API version override (alternative to URL versioning).
+    Format: YYYY-MM-DD for date-based versioning.
+  schema:
+    type: string
+    pattern: '^\d{4}-\d{2}-\d{2}$'
+  example: 2026-01-17
+
+FeatureFlags:
+  name: X-Feature-Flags
+  in: header
+  description: |
+    Comma-separated list of feature flags to enable.
+    Used for gradual rollouts and A/B testing.
+  schema:
+    type: string
+  example: new-reservation-flow,enhanced-search,beta-analytics
+
+# ============================================================================
+# Security & Compliance
+# ============================================================================
+
+ForwardedFor:
+  name: X-Forwarded-For
+  in: header
+  description: Original client IP address (for proxied requests)
+  schema:
+    type: string
+  example: 203.0.113.195, 70.41.3.18
+
+RealIp:
+  name: X-Real-IP
+  in: header
+  description: Real client IP address
+  schema:
+    type: string
+    format: ipv4
+  example: 203.0.113.195
+
+DeviceId:
+  name: X-Device-Id
+  in: header
+  description: |
+    Unique device identifier for fraud detection and analytics.
+    Persistent across sessions.
+  schema:
+    type: string
+    format: uuid
+  example: 990e8400-e29b-41d4-a716-446655440004
+
+SessionId:
+  name: X-Session-Id
+  in: header
+  description: User session identifier for tracking user activity
+  schema:
+    type: string
+    format: uuid
+  example: aa0e8400-e29b-41d4-a716-446655440005
+
+# ============================================================================
+# Performance & Caching
+# ============================================================================
+
+CacheControl:
+  name: Cache-Control
+  in: header
+  description: Cache directives for response caching
+  schema:
+    type: string
+  example: max-age=3600, must-revalidate
+
+Prefer:
+  name: Prefer
+  in: header
+  description: |
+    Client preferences for response handling (RFC 7240).
+    Examples: return=minimal, return=representation, respond-async
+  schema:
+    type: string
+  example: return=representation
