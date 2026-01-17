@@ -1,7 +1,7 @@
-import { Router, Response } from 'express';
+import { Router, Request, Response } from 'express';
 import { AppDataSource } from '../config/database';
 import logger from '../config/logger';
-import { authenticate, authorize, AuthRequest } from '../middleware/auth';
+import { authenticate, authorize } from '../middleware/auth';
 
 const router = Router();
 
@@ -9,7 +9,7 @@ const router = Router();
  * GET /v1/properties
  * List all properties (requires authentication and read:properties scope)
  */
-router.get('/', authenticate, authorize('read:properties'), async (req: AuthRequest, res: Response): Promise<void> => {
+router.get('/', authenticate, authorize('read:properties'), async (req: Request, res: Response): Promise<void> => {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const pageSize = parseInt(req.query.pageSize as string) || 20;
@@ -79,7 +79,7 @@ router.get('/', authenticate, authorize('read:properties'), async (req: AuthRequ
  * GET /v1/properties/:id
  * Get a single property by ID (requires authentication and read:properties scope)
  */
-router.get('/:id', authenticate, authorize('read:properties'), async (req: AuthRequest, res: Response): Promise<void> => {
+router.get('/:id', authenticate, authorize('read:properties'), async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
 

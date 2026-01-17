@@ -2,21 +2,11 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import logger from '../config/logger';
 
-// Extend Express Request to include user
-export interface AuthRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-    scopes: string[];
-    role: string;
-  };
-}
-
 /**
  * JWT Authentication Middleware
  * Validates Bearer tokens and attaches user info to request
  */
-export const authenticate = (req: AuthRequest, res: Response, next: NextFunction): void => {
+export const authenticate = (req: Request, res: Response, next: NextFunction): void => {
   try {
     // Get token from Authorization header
     const authHeader = req.headers.authorization;
@@ -103,7 +93,7 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
  * Authorization Middleware - Check if user has required scopes
  */
 export const authorize = (...requiredScopes: string[]) => {
-  return (req: AuthRequest, res: Response, next: NextFunction): void => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     if (!req.user) {
       res.status(401).json({
         type: 'https://stayos.com/errors/unauthorized',
@@ -144,7 +134,7 @@ export const authorize = (...requiredScopes: string[]) => {
 /**
  * Optional Authentication - Attach user if token is provided, but don't require it
  */
-export const optionalAuth = (req: AuthRequest, res: Response, next: NextFunction): void => {
+export const optionalAuth = (req: Request, res: Response, next: NextFunction): void => {
   const authHeader = req.headers.authorization;
   
   if (!authHeader) {

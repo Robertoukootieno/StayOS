@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import logger from '../config/logger';
-import { authenticate, AuthRequest } from '../middleware/auth';
+import { authenticate } from '../middleware/auth';
 
 const router = express.Router();
 
@@ -144,7 +144,7 @@ router.post('/token', (req: Request, res: Response) => {
  * GET /auth/me
  * Get current user info (requires authentication)
  */
-router.get('/me', authenticate, (req: AuthRequest, res: Response) => {
+router.get('/me', authenticate, (req: Request, res: Response) => {
   res.json({
     user: req.user,
   });

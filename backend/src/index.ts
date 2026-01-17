@@ -3,8 +3,12 @@ import dotenv from 'dotenv';
 import app from './app';
 import { initializeDatabase } from './config/database';
 import logger from './config/logger';
+import { initTelemetry } from './config/telemetry';
 
 dotenv.config();
+
+// Initialize OpenTelemetry (must be done before importing instrumented modules)
+initTelemetry();
 
 const PORT = process.env.PORT || 8080;
 

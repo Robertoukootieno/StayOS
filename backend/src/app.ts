@@ -7,6 +7,13 @@ import logger from './config/logger';
 import authRouter from './routes/auth';
 import propertiesRouter from './routes/properties';
 
+// Import new middleware
+import { tracingMiddleware } from './middleware/tracing';
+import { localizationMiddleware } from './middleware/localization';
+import { headerEnrichmentMiddleware, rateLimitHeadersMiddleware } from './middleware/headers';
+import { optionalTenant } from './middleware/tenant';
+import { idempotencyMiddleware } from './middleware/idempotency';
+
 dotenv.config();
 
 const app: Application = express();
@@ -40,14 +47,27 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Request logging
-app.use((req: Request, _res: Response, next: NextFunction) => {
-  logger.info(`${req.method} ${req.path}`, {
-    ip: req.ip,
-    userAgent: req.get('user-agent'),
-  });
-  next();
-});
+// ============================================
+// ENTERPRISE MIDDLEWARE (Phase 3)
+// ============================================
+
+// 1. Tracing & Correlation (must be first to generate request IDs)
+app.use(tracingMiddleware);
+
+// 2. Localization (extract language, timezone, currency)
+app.use(localizationMiddleware);
+
+// 3. Header Enrichment (add response headers)
+app.use(headerEnrichmentMiddleware);
+app.use(rateLimitHeadersMiddleware);
+
+// 4. Tenant Validation (optional for public endpoints, required for protected)
+// Note: We'll apply validateTenant selectively on protected routes
+// For now, use optionalTenant globally to extract tenant context if provided
+app.use(optionalTenant);
+
+// 5. Idempotency (for POST requests)
+app.use(idempotencyMiddleware);
 
 // ============================================
 // ROUTES
