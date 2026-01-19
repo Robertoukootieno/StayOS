@@ -3,11 +3,20 @@ import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import { Logger } from '@stayos/shared';
+import { InMemoryUserRepository } from './infrastructure/database/repositories/InMemoryUserRepository';
+import { PasswordHasher } from './infrastructure/services/PasswordHasher';
+import { TokenService } from './infrastructure/services/TokenService';
+import { createAuthRoutes } from './infrastructure/http/routes/auth.routes';
 
 const logger = new Logger('auth-service');
 
 // Create Express app
 export const app: Application = express();
+
+// Initialize services
+const userRepository = new InMemoryUserRepository();
+const passwordHasher = new PasswordHasher();
+const tokenService = new TokenService();
 
 // Security middleware
 app.use(helmet());
@@ -58,8 +67,8 @@ app.get('/health/live', (req: Request, res: Response) => {
   });
 });
 
-// API routes will be added here
-// app.use('/api/v1', routes);
+// API routes
+app.use('/api/v1/auth', createAuthRoutes(userRepository, passwordHasher, tokenService));
 
 // 404 handler
 app.use((req: Request, res: Response) => {
