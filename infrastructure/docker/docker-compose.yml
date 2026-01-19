@@ -1,0 +1,442 @@
+version: '3.9'
+
+# StayOS Microservices - Local Development Environment
+# This docker-compose file sets up all services for local development
+
+networks:
+  stayos-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  redis-data:
+  rabbitmq-data:
+  minio-data:
+  prometheus-data:
+  grafana-data:
+
+services:
+  # ============================================
+  # Infrastructure Services
+  # ============================================
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: stayos-postgres
+    environment:
+      POSTGRES_USER: stayos
+      POSTGRES_PASSWORD: stayos_dev_password
+      POSTGRES_DB: stayos_dev
+      POSTGRES_MULTIPLE_DATABASES: auth,property_mgmt,reservations,restaurant,guests,payments,notifications
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ../../backend/database/schemas:/docker-entrypoint-initdb.d
+    networks:
+      - stayos-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U stayos"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache & Session Store
+  redis:
+    image: redis:7-alpine
+    container_name: stayos-redis
+    command: redis-server --appendonly yes --requirepass stayos_redis_password
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - stayos-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # RabbitMQ Message Broker
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    container_name: stayos-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: stayos
+      RABBITMQ_DEFAULT_PASS: stayos_rabbitmq_password
+      RABBITMQ_DEFAULT_VHOST: stayos
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # Management UI
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - stayos-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # MinIO Object Storage (S3-compatible)
+  minio:
+    image: minio/minio:latest
+    container_name: stayos-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: stayos
+      MINIO_ROOT_PASSWORD: stayos_minio_password
+    ports:
+      - "9000:9000"   # API
+      - "9001:9001"   # Console
+    volumes:
+      - minio-data:/data
+    networks:
+      - stayos-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ============================================
+  # Observability Stack
+  # ============================================
+
+  # Prometheus Metrics
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: stayos-prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - "9090:9090"
+    volumes:
+      - ../monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    networks:
+      - stayos-network
+    depends_on:
+      - api-gateway
+
+  # Grafana Dashboards
+  grafana:
+    image: grafana/grafana:latest
+    container_name: stayos-grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_INSTALL_PLUGINS: grafana-clock-panel
+    ports:
+      - "3100:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ../monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ../monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - stayos-network
+    depends_on:
+      - prometheus
+
+  # Jaeger Distributed Tracing
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: stayos-jaeger
+    environment:
+      COLLECTOR_ZIPKIN_HOST_PORT: :9411
+      COLLECTOR_OTLP_ENABLED: true
+    ports:
+      - "5775:5775/udp"   # Zipkin compact
+      - "6831:6831/udp"   # Jaeger compact
+      - "6832:6832/udp"   # Jaeger binary
+      - "5778:5778"       # Serve configs
+      - "16686:16686"     # UI
+      - "14268:14268"     # Jaeger collector
+      - "14250:14250"     # gRPC
+      - "9411:9411"       # Zipkin
+      - "4317:4317"       # OTLP gRPC
+      - "4318:4318"       # OTLP HTTP
+    networks:
+      - stayos-network
+
+  # ============================================
+  # Microservices
+  # ============================================
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ../../services/api-gateway
+      dockerfile: Dockerfile
+    container_name: stayos-api-gateway
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      REDIS_URL: redis://:stayos_redis_password@redis:6379
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+      AUTH_SERVICE_URL: http://auth-service:3001
+      PROPERTY_SERVICE_URL: http://property-service:3002
+      RESERVATION_SERVICE_URL: http://reservation-service:3003
+      RESTAURANT_SERVICE_URL: http://restaurant-service:3004
+    ports:
+      - "3000:3000"
+    networks:
+      - stayos-network
+    depends_on:
+      - redis
+      - jaeger
+      - auth-service
+    volumes:
+      - ../../services/api-gateway:/app
+      - /app/node_modules
+
+  # Authentication Service
+  auth-service:
+    build:
+      context: ../../services/auth-service
+      dockerfile: Dockerfile
+    container_name: stayos-auth-service
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      DATABASE_URL: postgresql://stayos:stayos_dev_password@postgres:5432/auth
+      REDIS_URL: redis://:stayos_redis_password@redis:6379
+      JWT_SECRET: your-super-secret-jwt-key-change-in-production
+      JWT_EXPIRY: 24h
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+    ports:
+      - "3001:3001"
+    networks:
+      - stayos-network
+    depends_on:
+      - postgres
+      - redis
+      - jaeger
+    volumes:
+      - ../../services/auth-service:/app
+      - /app/node_modules
+
+  # Property Management Service
+  property-service:
+    build:
+      context: ../../services/property-service
+      dockerfile: Dockerfile
+    container_name: stayos-property-service
+    environment:
+      NODE_ENV: development
+      PORT: 3002
+      DATABASE_URL: postgresql://stayos:stayos_dev_password@postgres:5432/property_mgmt
+      REDIS_URL: redis://:stayos_redis_password@redis:6379
+      RABBITMQ_URL: amqp://stayos:stayos_rabbitmq_password@rabbitmq:5672/stayos
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+    ports:
+      - "3002:3002"
+    networks:
+      - stayos-network
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+      - jaeger
+    volumes:
+      - ../../services/property-service:/app
+      - /app/node_modules
+
+  # Reservation Service
+  reservation-service:
+    build:
+      context: ../../services/reservation-service
+      dockerfile: Dockerfile
+    container_name: stayos-reservation-service
+    environment:
+      NODE_ENV: development
+      PORT: 3003
+      DATABASE_URL: postgresql://stayos:stayos_dev_password@postgres:5432/reservations
+      REDIS_URL: redis://:stayos_redis_password@redis:6379
+      RABBITMQ_URL: amqp://stayos:stayos_rabbitmq_password@rabbitmq:5672/stayos
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+      NOTIFICATION_SERVICE_URL: http://notification-service:3007
+    ports:
+      - "3003:3003"
+    networks:
+      - stayos-network
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+      - jaeger
+    volumes:
+      - ../../services/reservation-service:/app
+      - /app/node_modules
+
+  # Restaurant & Bar Service
+  restaurant-service:
+    build:
+      context: ../../services/restaurant-service
+      dockerfile: Dockerfile
+    container_name: stayos-restaurant-service
+    environment:
+      NODE_ENV: development
+      PORT: 3004
+      DATABASE_URL: postgresql://stayos:stayos_dev_password@postgres:5432/restaurant
+      REDIS_URL: redis://:stayos_redis_password@redis:6379
+      RABBITMQ_URL: amqp://stayos:stayos_rabbitmq_password@rabbitmq:5672/stayos
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+    ports:
+      - "3004:3004"
+    networks:
+      - stayos-network
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+      - jaeger
+    volumes:
+      - ../../services/restaurant-service:/app
+      - /app/node_modules
+
+  # Guest Service
+  guest-service:
+    build:
+      context: ../../services/guest-service
+      dockerfile: Dockerfile
+    container_name: stayos-guest-service
+    environment:
+      NODE_ENV: development
+      PORT: 3005
+      DATABASE_URL: postgresql://stayos:stayos_dev_password@postgres:5432/guests
+      REDIS_URL: redis://:stayos_redis_password@redis:6379
+      RABBITMQ_URL: amqp://stayos:stayos_rabbitmq_password@rabbitmq:5672/stayos
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+    ports:
+      - "3005:3005"
+    networks:
+      - stayos-network
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+      - jaeger
+    volumes:
+      - ../../services/guest-service:/app
+      - /app/node_modules
+
+  # Payment Service
+  payment-service:
+    build:
+      context: ../../services/payment-service
+      dockerfile: Dockerfile
+    container_name: stayos-payment-service
+    environment:
+      NODE_ENV: development
+      PORT: 3006
+      DATABASE_URL: postgresql://stayos:stayos_dev_password@postgres:5432/payments
+      REDIS_URL: redis://:stayos_redis_password@redis:6379
+      RABBITMQ_URL: amqp://stayos:stayos_rabbitmq_password@rabbitmq:5672/stayos
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+      STRIPE_SECRET_KEY: sk_test_your_stripe_key
+      STRIPE_WEBHOOK_SECRET: whsec_your_webhook_secret
+    ports:
+      - "3006:3006"
+    networks:
+      - stayos-network
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+      - jaeger
+    volumes:
+      - ../../services/payment-service:/app
+      - /app/node_modules
+
+  # Notification Service
+  notification-service:
+    build:
+      context: ../../services/notification-service
+      dockerfile: Dockerfile
+    container_name: stayos-notification-service
+    environment:
+      NODE_ENV: development
+      PORT: 3007
+      DATABASE_URL: postgresql://stayos:stayos_dev_password@postgres:5432/notifications
+      REDIS_URL: redis://:stayos_redis_password@redis:6379
+      RABBITMQ_URL: amqp://stayos:stayos_rabbitmq_password@rabbitmq:5672/stayos
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+      SENDGRID_API_KEY: your_sendgrid_api_key
+      TWILIO_ACCOUNT_SID: your_twilio_account_sid
+      TWILIO_AUTH_TOKEN: your_twilio_auth_token
+      TWILIO_PHONE_NUMBER: +1234567890
+    ports:
+      - "3007:3007"
+    networks:
+      - stayos-network
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+      - jaeger
+    volumes:
+      - ../../services/notification-service:/app
+      - /app/node_modules
+
+  # Analytics Service
+  analytics-service:
+    build:
+      context: ../../services/analytics-service
+      dockerfile: Dockerfile
+    container_name: stayos-analytics-service
+    environment:
+      NODE_ENV: development
+      PORT: 3008
+      DATABASE_URL: postgresql://stayos:stayos_dev_password@postgres:5432/stayos_dev
+      REDIS_URL: redis://:stayos_redis_password@redis:6379
+      RABBITMQ_URL: amqp://stayos:stayos_rabbitmq_password@rabbitmq:5672/stayos
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+    ports:
+      - "3008:3008"
+    networks:
+      - stayos-network
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+      - jaeger
+    volumes:
+      - ../../services/analytics-service:/app
+      - /app/node_modules
+
+  # Storage Service
+  storage-service:
+    build:
+      context: ../../services/storage-service
+      dockerfile: Dockerfile
+    container_name: stayos-storage-service
+    environment:
+      NODE_ENV: development
+      PORT: 3009
+      DATABASE_URL: postgresql://stayos:stayos_dev_password@postgres:5432/stayos_dev
+      REDIS_URL: redis://:stayos_redis_password@redis:6379
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+      MINIO_ACCESS_KEY: stayos
+      MINIO_SECRET_KEY: stayos_minio_password
+      MINIO_USE_SSL: false
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+    ports:
+      - "3009:3009"
+    networks:
+      - stayos-network
+    depends_on:
+      - postgres
+      - redis
+      - minio
+      - jaeger
+    volumes:
+      - ../../services/storage-service:/app
+      - /app/node_modules
+

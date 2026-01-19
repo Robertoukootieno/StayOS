@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stayos-config
+  labels:
+    app: stayos
+data:
+  # Application Configuration
+  NODE_ENV: "production"
+  LOG_LEVEL: "info"
+  LOG_FORMAT: "json"
+  
+  # API Configuration
+  API_VERSION: "v1"
+  API_PREFIX: "/v1"
+  API_RATE_LIMIT: "100"
+  API_RATE_WINDOW: "900000"
+  
+  # CORS Configuration
+  CORS_ENABLED: "true"
+  CORS_CREDENTIALS: "true"
+  
+  # Session Configuration
+  SESSION_TTL: "86400"
+  SESSION_COOKIE_SECURE: "true"
+  SESSION_COOKIE_HTTP_ONLY: "true"
+  SESSION_COOKIE_SAME_SITE: "strict"
+  
+  # JWT Configuration
+  JWT_EXPIRY: "24h"
+  JWT_REFRESH_EXPIRY: "7d"
+  
+  # Database Configuration
+  DB_POOL_MIN: "2"
+  DB_POOL_MAX: "10"
+  DB_IDLE_TIMEOUT: "30000"
+  DB_CONNECTION_TIMEOUT: "5000"
+  
+  # Redis Configuration
+  REDIS_TTL: "3600"
+  REDIS_MAX_RETRIES: "3"
+  REDIS_RETRY_DELAY: "1000"
+  
+  # RabbitMQ Configuration
+  RABBITMQ_PREFETCH: "10"
+  RABBITMQ_HEARTBEAT: "60"
+  
+  # OpenTelemetry Configuration
+  OTEL_SERVICE_NAME: "stayos-api"
+  OTEL_TRACES_SAMPLER: "parentbased_traceidratio"
+  OTEL_TRACES_SAMPLER_ARG: "0.1"
+  
+  # Feature Flags
+  FEATURE_MULTI_TENANCY: "true"
+  FEATURE_DISTRIBUTED_TRACING: "true"
+  FEATURE_RATE_LIMITING: "true"
+  FEATURE_CACHING: "true"
+  
+  # Localization
+  DEFAULT_LANGUAGE: "en"
+  DEFAULT_CURRENCY: "USD"
+  DEFAULT_TIMEZONE: "UTC"
+  SUPPORTED_LANGUAGES: "en,es,fr,de,it,pt,ja,zh,ar,ru,sw,so,am,rw"
+  SUPPORTED_CURRENCIES: "USD,EUR,GBP,JPY,CNY,AUD,CAD,CHF,INR,BRL,KES,TZS,UGX,RWF,ETB,SOS"
+  
+  # File Upload
+  MAX_FILE_SIZE: "10485760"
+  ALLOWED_FILE_TYPES: "image/jpeg,image/png,image/gif,application/pdf"
+  
+  # Email Configuration
+  EMAIL_FROM: "noreply@stayos.com"
+  EMAIL_FROM_NAME: "StayOS"
+  
+  # Pagination
+  DEFAULT_PAGE_SIZE: "20"
+  MAX_PAGE_SIZE: "100"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-urls
+  labels:
+    app: stayos
+data:
+  AUTH_SERVICE_URL: "http://auth-service:3001"
+  PROPERTY_SERVICE_URL: "http://property-service:3002"
+  RESERVATION_SERVICE_URL: "http://reservation-service:3003"
+  RESTAURANT_SERVICE_URL: "http://restaurant-service:3004"
+  GUEST_SERVICE_URL: "http://guest-service:3005"
+  PAYMENT_SERVICE_URL: "http://payment-service:3006"
+  NOTIFICATION_SERVICE_URL: "http://notification-service:3007"
+  ANALYTICS_SERVICE_URL: "http://analytics-service:3008"
+  STORAGE_SERVICE_URL: "http://storage-service:3009"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: observability-config
+  labels:
+    app: stayos
+data:
+  JAEGER_ENDPOINT: "http://jaeger-collector.observability.svc.cluster.local:14268/api/traces"
+  PROMETHEUS_ENDPOINT: "http://prometheus.observability.svc.cluster.local:9090"
+  GRAFANA_ENDPOINT: "http://grafana.observability.svc.cluster.local:3000"
+
