@@ -3,18 +3,30 @@ import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import { Logger } from '@stayos/shared';
-import { InMemoryUserRepository } from './infrastructure/database/repositories/InMemoryUserRepository';
+import { PostgresUserRepository } from './infrastructure/database/repositories/PostgresUserRepository';
 import { PasswordHasher } from './infrastructure/services/PasswordHasher';
 import { TokenService } from './infrastructure/services/TokenService';
 import { createAuthRoutes } from './infrastructure/http/routes/auth.routes';
+import { createDatabasePool, testDatabaseConnection } from './infrastructure/config/database';
 
 const logger = new Logger('auth-service');
 
 // Create Express app
 export const app: Application = express();
 
+// Initialize database
+const dbPool = createDatabasePool();
+
+// Test database connection on startup
+testDatabaseConnection(dbPool).then((connected) => {
+  if (!connected) {
+    logger.error('Failed to connect to database');
+    process.exit(1);
+  }
+});
+
 // Initialize services
-const userRepository = new InMemoryUserRepository();
+const userRepository = new PostgresUserRepository(dbPool);
 const passwordHasher = new PasswordHasher();
 const tokenService = new TokenService();
 
