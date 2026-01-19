@@ -15,16 +15,15 @@ BEGIN
     
     IF sample_user_id IS NULL THEN
         -- Create a system user if none exists
-        INSERT INTO shared.users (id, email, first_name, last_name, role)
+        INSERT INTO shared.users (id, email, full_name, status)
         VALUES (
             '00000000-0000-0000-0000-000000000001',
             'system@stayos.com',
-            'System',
-            'User',
-            'ADMIN'
+            'System User',
+            'ACTIVE'
         )
         ON CONFLICT (id) DO NOTHING;
-        
+
         sample_user_id := '00000000-0000-0000-0000-000000000001';
     END IF;
 
@@ -47,13 +46,12 @@ BEGIN
         delivery_available,
         takeout_available,
         address,
-        city,
-        state_province,
-        postal_code,
-        country,
         timezone,
-        phone,
-        email,
+        contact_info,
+        default_currency,
+        default_language,
+        total_units,
+        total_capacity,
         status,
         created_by,
         updated_by

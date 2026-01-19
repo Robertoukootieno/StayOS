@@ -1,6 +1,7 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import logger from './config/logger';
@@ -9,6 +10,8 @@ import propertiesRouter from './routes/properties';
 import venuesRouter from './routes/venues';
 import tablesRouter from './routes/tables';
 import reservationsRouter from './routes/reservations';
+import healthRouter from './routes/health';
+import docsRouter from './routes/docs';
 
 // Import new middleware
 import { tracingMiddleware } from './middleware/tracing';
@@ -36,11 +39,22 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// Body parsing
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Response compression
+app.use(compression({
+  filter: (req, res) => {
+    if (req.headers['x-no-compression']) {
+      return false;
+    }
+    return compression.filter(req, res);
+  },
+  level: 6, // Compression level (0-9)
+}));
 
-// Rate limiting
+// Body parsing
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Rate limiting (global)
 const limiter = rateLimit({
   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000'), // 15 minutes
   max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100'),
@@ -76,12 +90,20 @@ app.use(idempotencyMiddleware);
 // ROUTES
 // ============================================
 
-// Health check
-app.get('/health', (_req: Request, res: Response) => {
+// Health check routes (no authentication required)
+app.use('/health', healthRouter);
+
+// API documentation routes (no authentication required)
+app.use('/docs', docsRouter);
+
+// Root endpoint
+app.get('/', (_req: Request, res: Response) => {
   res.json({
-    status: 'ok',
-    service: 'StayOS API',
+    name: 'StayOS API',
     version: process.env.API_VERSION || '1.0.0',
+    description: 'Comprehensive property management system with restaurant and bar features',
+    documentation: '/docs',
+    health: '/health',
     timestamp: new Date().toISOString(),
   });
 });

@@ -13,8 +13,22 @@ DECLARE
     patio_id UUID;
     private_room_id UUID;
 BEGIN
-    -- Get sample user
+    -- Get or create sample user
     SELECT id INTO sample_user_id FROM shared.users LIMIT 1;
+
+    IF sample_user_id IS NULL THEN
+        -- Create a system user if none exists
+        INSERT INTO shared.users (id, email, full_name, status)
+        VALUES (
+            '00000000-0000-0000-0000-000000000001',
+            'system@stayos.com',
+            'System User',
+            'ACTIVE'
+        )
+        ON CONFLICT (id) DO NOTHING;
+
+        sample_user_id := '00000000-0000-0000-0000-000000000001';
+    END IF;
     
     -- Create floor sections for La Bella Vista
     INSERT INTO tables.floor_sections (
