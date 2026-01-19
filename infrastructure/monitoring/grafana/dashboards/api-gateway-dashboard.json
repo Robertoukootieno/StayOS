@@ -1,0 +1,108 @@
+{
+  "dashboard": {
+    "title": "API Gateway Dashboard",
+    "tags": ["stayos", "api-gateway"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Total Requests",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(increase(http_requests_total{service=\"api-gateway\"}[1h]))"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "id": 2,
+        "title": "Success Rate",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "sum(rate(http_requests_total{service=\"api-gateway\",status=~\"2..\"}[5m])) / sum(rate(http_requests_total{service=\"api-gateway\"}[5m])) * 100"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 6,
+          "y": 0
+        }
+      },
+      {
+        "id": 3,
+        "title": "Average Response Time",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "avg(http_request_duration_seconds{service=\"api-gateway\"})"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 12,
+          "y": 0
+        }
+      },
+      {
+        "id": 4,
+        "title": "Active Connections",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "http_active_connections{service=\"api-gateway\"}"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 18,
+          "y": 0
+        }
+      },
+      {
+        "id": 5,
+        "title": "Request Rate by Endpoint",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "sum(rate(http_requests_total{service=\"api-gateway\"}[5m])) by (endpoint)"
+          }
+        ],
+        "gridPos": {
+          "h": 10,
+          "w": 24,
+          "x": 0,
+          "y": 6
+        }
+      },
+      {
+        "id": 6,
+        "title": "Response Time Distribution",
+        "type": "heatmap",
+        "targets": [
+          {
+            "expr": "sum(rate(http_request_duration_seconds_bucket{service=\"api-gateway\"}[5m])) by (le)"
+          }
+        ],
+        "gridPos": {
+          "h": 10,
+          "w": 24,
+          "x": 0,
+          "y": 16
+        }
+      }
+    ],
+    "schemaVersion": 36,
+    "version": 1
+  }
+}
+

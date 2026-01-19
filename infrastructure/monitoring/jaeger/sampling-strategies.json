@@ -1,0 +1,59 @@
+{
+  "service_strategies": [
+    {
+      "service": "api-gateway",
+      "type": "probabilistic",
+      "param": 1.0
+    },
+    {
+      "service": "auth-service",
+      "type": "probabilistic",
+      "param": 1.0
+    },
+    {
+      "service": "property-service",
+      "type": "probabilistic",
+      "param": 0.5
+    },
+    {
+      "service": "reservation-service",
+      "type": "probabilistic",
+      "param": 1.0
+    },
+    {
+      "service": "restaurant-service",
+      "type": "probabilistic",
+      "param": 0.5
+    },
+    {
+      "service": "guest-service",
+      "type": "probabilistic",
+      "param": 0.5
+    },
+    {
+      "service": "payment-service",
+      "type": "probabilistic",
+      "param": 1.0
+    },
+    {
+      "service": "notification-service",
+      "type": "probabilistic",
+      "param": 0.3
+    },
+    {
+      "service": "analytics-service",
+      "type": "probabilistic",
+      "param": 0.1
+    },
+    {
+      "service": "storage-service",
+      "type": "probabilistic",
+      "param": 0.3
+    }
+  ],
+  "default_strategy": {
+    "type": "probabilistic",
+    "param": 0.5
+  }
+}
+
