@@ -63,8 +63,8 @@ export const idempotencyMiddleware = (req: Request, res: Response, next: NextFun
       return;
     }
 
-    // Extract idempotency key from header
-    const idempotencyKey = req.headers['idempotency-key'] as string;
+    // Extract idempotency key from header (case-insensitive)
+    const idempotencyKey = (req.headers['idempotency-key'] || req.headers['x-idempotency-key']) as string;
 
     // Idempotency key is optional, but recommended for POST requests
     if (!idempotencyKey) {

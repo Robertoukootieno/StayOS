@@ -46,7 +46,8 @@ const parseAcceptLanguage = (acceptLanguage: string): string => {
  */
 const isValidTimezone = (timezone: string): boolean => {
   // Basic format check: Area/Location or Area/Location/Sublocation
-  const timezoneRegex = /^[A-Z][a-z]+\/[A-Z][a-z_]+(?:\/[A-Z][a-z_]+)?$/;
+  // Allow underscores and mixed case in location names (e.g., New_York, Port_of_Spain)
+  const timezoneRegex = /^[A-Za-z]+\/[A-Za-z_]+(?:\/[A-Za-z_]+)?$/;
   return timezone === 'UTC' || timezoneRegex.test(timezone);
 };
 
