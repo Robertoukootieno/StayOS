@@ -3,13 +3,47 @@ import logger from '../config/logger';
 
 /**
  * Supported languages (ISO 639-1)
+ * Includes global languages and East African languages
  */
-const SUPPORTED_LANGUAGES = ['en', 'es', 'fr', 'de', 'it', 'pt', 'ja', 'zh', 'ar', 'ru'];
+const SUPPORTED_LANGUAGES = [
+  'en', // English
+  'es', // Spanish
+  'fr', // French
+  'de', // German
+  'it', // Italian
+  'pt', // Portuguese
+  'ja', // Japanese
+  'zh', // Chinese
+  'ar', // Arabic
+  'ru', // Russian
+  'sw', // Swahili (Kenya, Tanzania, Uganda)
+  'so', // Somali (Somalia)
+  'am', // Amharic (Ethiopia)
+  'rw', // Kinyarwanda (Rwanda)
+];
 
 /**
  * Supported currencies (ISO 4217)
+ * Includes global currencies and East African currencies
  */
-const SUPPORTED_CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'CNY', 'AUD', 'CAD', 'CHF', 'INR', 'BRL'];
+const SUPPORTED_CURRENCIES = [
+  'USD', // US Dollar
+  'EUR', // Euro
+  'GBP', // British Pound
+  'JPY', // Japanese Yen
+  'CNY', // Chinese Yuan
+  'AUD', // Australian Dollar
+  'CAD', // Canadian Dollar
+  'CHF', // Swiss Franc
+  'INR', // Indian Rupee
+  'BRL', // Brazilian Real
+  'KES', // Kenyan Shilling
+  'TZS', // Tanzanian Shilling
+  'UGX', // Ugandan Shilling
+  'RWF', // Rwandan Franc
+  'ETB', // Ethiopian Birr
+  'SOS', // Somali Shilling
+];
 
 /**
  * Parse Accept-Language header

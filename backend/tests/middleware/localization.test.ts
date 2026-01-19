@@ -68,8 +68,11 @@ describe('Localization Middleware', () => {
       expect(nextFunction).toHaveBeenCalled();
     });
 
-    it('should support all defined languages', () => {
-      const supportedLanguages = ['en', 'es', 'fr', 'de', 'it', 'pt', 'ja', 'zh', 'ar', 'ru'];
+    it('should support all defined languages including East African languages', () => {
+      const supportedLanguages = [
+        'en', 'es', 'fr', 'de', 'it', 'pt', 'ja', 'zh', 'ar', 'ru', // Global languages
+        'sw', 'so', 'am', 'rw', // East African languages
+      ];
 
       supportedLanguages.forEach((lang) => {
         mockRequest.headers = {
@@ -148,8 +151,11 @@ describe('Localization Middleware', () => {
       expect(nextFunction).toHaveBeenCalled();
     });
 
-    it('should support all defined currencies', () => {
-      const supportedCurrencies = ['USD', 'EUR', 'GBP', 'JPY', 'CNY', 'AUD', 'CAD', 'CHF', 'INR', 'BRL'];
+    it('should support all defined currencies including East African currencies', () => {
+      const supportedCurrencies = [
+        'USD', 'EUR', 'GBP', 'JPY', 'CNY', 'AUD', 'CAD', 'CHF', 'INR', 'BRL', // Global currencies
+        'KES', 'TZS', 'UGX', 'RWF', 'ETB', 'SOS', // East African currencies
+      ];
 
       supportedCurrencies.forEach((currency) => {
         mockRequest.headers = {
