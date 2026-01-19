@@ -8,6 +8,7 @@ import authRouter from './routes/auth';
 import propertiesRouter from './routes/properties';
 import venuesRouter from './routes/venues';
 import tablesRouter from './routes/tables';
+import reservationsRouter from './routes/reservations';
 
 // Import new middleware
 import { tracingMiddleware } from './middleware/tracing';
@@ -91,6 +92,7 @@ app.use(`${apiPrefix}/auth`, authRouter);
 app.use(`${apiPrefix}/properties`, propertiesRouter);
 app.use(`${apiPrefix}/venues`, venuesRouter);
 app.use(`${apiPrefix}/venues/:venueId/tables`, tablesRouter);
+app.use(`${apiPrefix}/venues/:venueId/reservations`, reservationsRouter);
 
 // 404 handler
 app.use((req: Request, res: Response) => {
