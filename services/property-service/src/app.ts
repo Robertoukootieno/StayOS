@@ -3,11 +3,28 @@ import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import { Logger } from '@stayos/shared';
+import { createDatabasePool, testDatabaseConnection } from './infrastructure/config/database';
+import { PropertyRepository } from './infrastructure/database/repositories/PropertyRepository';
+import { createPropertyRoutes } from './infrastructure/http/routes/property.routes';
 
 const logger = new Logger('property-service');
 
 // Create Express app
 export const app: Application = express();
+
+// Initialize database
+const dbPool = createDatabasePool();
+
+// Test database connection on startup
+testDatabaseConnection(dbPool).then((connected) => {
+  if (!connected) {
+    logger.error('Failed to connect to database');
+    process.exit(1);
+  }
+});
+
+// Initialize repositories
+const propertyRepository = new PropertyRepository(dbPool);
 
 // Security middleware
 app.use(helmet());
@@ -58,8 +75,8 @@ app.get('/health/live', (req: Request, res: Response) => {
   });
 });
 
-// API routes will be added here
-// app.use('/api/v1', routes);
+// API routes
+app.use('/api/v1/properties', createPropertyRoutes(propertyRepository));
 
 // 404 handler
 app.use((req: Request, res: Response) => {
