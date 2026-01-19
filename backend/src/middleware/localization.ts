@@ -46,6 +46,46 @@ const SUPPORTED_CURRENCIES = [
 ];
 
 /**
+ * East African Timezone Presets (IANA timezone database)
+ * Maps countries to their primary timezones
+ */
+export const EAST_AFRICAN_TIMEZONES = {
+  // East Africa Time (EAT) - UTC+3
+  KENYA: 'Africa/Nairobi',
+  TANZANIA: 'Africa/Dar_es_Salaam',
+  UGANDA: 'Africa/Kampala',
+  RWANDA: 'Africa/Kigali',
+  BURUNDI: 'Africa/Bujumbura',
+  ETHIOPIA: 'Africa/Addis_Ababa',
+  SOMALIA: 'Africa/Mogadishu',
+  DJIBOUTI: 'Africa/Djibouti',
+  ERITREA: 'Africa/Asmara',
+  SOUTH_SUDAN: 'Africa/Juba',
+  COMOROS: 'Indian/Comoro',
+  MAYOTTE: 'Indian/Mayotte',
+  MADAGASCAR: 'Indian/Antananarivo',
+  SEYCHELLES: 'Indian/Mahe',
+  MAURITIUS: 'Indian/Mauritius',
+} as const;
+
+/**
+ * Locale presets for East African countries
+ * Combines language, currency, and timezone for quick setup
+ */
+export const EAST_AFRICAN_LOCALE_PRESETS = {
+  KE: { language: 'sw', currency: 'KES', timezone: 'Africa/Nairobi', country: 'Kenya' },
+  TZ: { language: 'sw', currency: 'TZS', timezone: 'Africa/Dar_es_Salaam', country: 'Tanzania' },
+  UG: { language: 'sw', currency: 'UGX', timezone: 'Africa/Kampala', country: 'Uganda' },
+  RW: { language: 'rw', currency: 'RWF', timezone: 'Africa/Kigali', country: 'Rwanda' },
+  ET: { language: 'am', currency: 'ETB', timezone: 'Africa/Addis_Ababa', country: 'Ethiopia' },
+  SO: { language: 'so', currency: 'SOS', timezone: 'Africa/Mogadishu', country: 'Somalia' },
+  BI: { language: 'rw', currency: 'BIF', timezone: 'Africa/Bujumbura', country: 'Burundi' },
+  DJ: { language: 'ar', currency: 'DJF', timezone: 'Africa/Djibouti', country: 'Djibouti' },
+  ER: { language: 'ar', currency: 'ERN', timezone: 'Africa/Asmara', country: 'Eritrea' },
+  SS: { language: 'en', currency: 'SSP', timezone: 'Africa/Juba', country: 'South Sudan' },
+} as const;
+
+/**
  * Parse Accept-Language header
  * Format: "en-US,en;q=0.9,es;q=0.8"
  * Returns the best matching language code
